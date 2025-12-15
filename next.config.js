@@ -1,0 +1,14 @@
+module.exports = {
+  reactStrictMode: true,
+
+  async rewrites() {
+    return [
+      { source: "/status", destination: "/api/status" },
+      { source: "/catalog", destination: "/api/catalog" },
+      { source: "/weather", destination: "/api/weather" },
+      { source: "/verify", destination: "/api/verify" },
+      { source: "/receipt", destination: "/api/receipt" },
+      { source: "/payments", destination: "/api/payments" },
+    ];
+  },
+};

@@ -1,8 +1,5 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/landing.html" },
-    { "source": "/standard", "destination": "/standard.html" },
-    { "source": "/examples", "destination": "/examples.html" },
     { "source": "/status", "destination": "/api/status" },
     { "source": "/catalog", "destination": "/api/catalog" },
     { "source": "/weather", "destination": "/api/weather" },
