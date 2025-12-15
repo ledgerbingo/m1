@@ -4,6 +4,22 @@ function getBaseUrl(req) {
   return `${proto}://${host}`;
 }
 
+function setCors(req, res) {
+  const origin = process.env.CORS_ORIGIN || "*";
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Authorization, X-Payment-Proof, Content-Type"
+  );
+  res.setHeader(
+    "Access-Control-Expose-Headers",
+    "WWW-Authenticate"
+  );
+  res.setHeader("Access-Control-Max-Age", "86400");
+  res.setHeader("Vary", "Origin");
+}
+
 function build402Header({ chainId, token, amount, facilitator }) {
   return (
     `x402 chain_id="${chainId}" ` +
@@ -84,9 +100,18 @@ function getMockWeather() {
 }
 
 module.exports = async (req, res) => {
+  setCors(req, res);
+  res.setHeader("Cache-Control", "no-store");
+
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    res.end();
+    return;
+  }
+
   if (req.method !== "GET") {
     res.statusCode = 405;
-    res.setHeader("Allow", "GET");
+    res.setHeader("Allow", "GET,OPTIONS");
     res.end("Method Not Allowed");
     return;
   }
@@ -105,7 +130,7 @@ module.exports = async (req, res) => {
 
   const proof = getProof(req);
   if (!proof) {
-    const facilitator = getBaseUrl(req);
+    const facilitator = `${getBaseUrl(req)}/verify`;
     res.statusCode = 402;
     res.setHeader(
       "WWW-Authenticate",

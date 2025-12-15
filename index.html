@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DEO x402 Demo (Option A)</title>
+    <style>
+      body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 40px; color: #111; }
+      .card { max-width: 860px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+      button { padding: 10px 14px; border-radius: 10px; border: 1px solid #d1d5db; background: #111; color: #fff; cursor: pointer; }
+      button.secondary { background: #fff; color: #111; }
+      pre { background: #0b1020; color: #e5e7eb; padding: 14px; border-radius: 12px; overflow: auto; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      .muted { color: #6b7280; }
+      .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid #e5e7eb; font-size: 12px; }
+      .ok { background: #ecfdf5; border-color: #a7f3d0; }
+      .warn { background: #fffbeb; border-color: #fcd34d; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1 style="margin-top: 0;">DEO x402 Demo <span class="pill ok">Option A (Mock)</span></h1>
+      <div class="muted">
+        This is a Vercel-native demo. The API returns <code>402</code> with <code>WWW-Authenticate: x402 ...</code>.
+        Clicking “Pay (mock)” generates a proof and retries.
+      </div>
+
+      <div class="row">
+        <button id="btnFetch">Fetch /weather</button>
+        <button class="secondary" id="btnPay" disabled>Pay (mock) + Retry</button>
+      </div>
+
+      <div class="row muted">
+        <div>Current proof: <code id="proof">(none)</code></div>
+      </div>
+
+      <h3>Last response</h3>
+      <pre><code id="out">(click Fetch)</code></pre>
+
+      <h3>Last WWW-Authenticate</h3>
+      <pre><code id="auth">(none)</code></pre>
+
+      <h3 class="muted">cURL (same flow)</h3>
+      <pre><code id="curl">curl -i ${location.origin}/weather</code></pre>
+    </div>
+
+    <script>
+      const out = document.getElementById('out');
+      const auth = document.getElementById('auth');
+      const btnFetch = document.getElementById('btnFetch');
+      const btnPay = document.getElementById('btnPay');
+      const proofEl = document.getElementById('proof');
+      const curlEl = document.getElementById('curl');
+
+      let lastAuthHeader = '';
+      let lastFacilitator = '';
+      let currentProof = '';
+
+      function parseX402(header) {
+        const params = {};
+        const re = /(\w+)="([^"]+)"/g;
+        let m;
+        while ((m = re.exec(header)) !== null) params[m[1]] = m[2];
+        return params;
+      }
+
+      async function fetchWeather(proof) {
+        const headers = {};
+        if (proof) {
+          headers['X-Payment-Proof'] = proof;
+          headers['Authorization'] = `x402 ${proof}`;
+        }
+        const res = await fetch('/weather', { headers });
+        const text = await res.text();
+        let body;
+        try { body = JSON.parse(text); } catch { body = { raw: text }; }
+
+        lastAuthHeader = res.headers.get('www-authenticate') || '';
+        auth.textContent = lastAuthHeader || '(none)';
+
+        if (res.status === 402 && lastAuthHeader) {
+          const p = parseX402(lastAuthHeader);
+          lastFacilitator = p.facilitator || '';
+          btnPay.disabled = false;
+        }
+
+        out.textContent = JSON.stringify({ status: res.status, body }, null, 2);
+        curlEl.textContent = proof
+          ? `curl -i ${location.origin}/weather -H "X-Payment-Proof: ${proof}"`
+          : `curl -i ${location.origin}/weather`;
+
+        return res.status;
+      }
+
+      btnFetch.addEventListener('click', async () => {
+        btnPay.disabled = true;
+        currentProof = '';
+        proofEl.textContent = '(none)';
+        await fetchWeather();
+      });
+
+      btnPay.addEventListener('click', async () => {
+        currentProof = `mock_${Date.now()}`;
+        proofEl.textContent = currentProof;
+
+        if (lastFacilitator) {
+          try {
+            const verifyUrl = new URL(lastFacilitator);
+            verifyUrl.searchParams.set('txHash', currentProof);
+            await fetch(verifyUrl.toString());
+          } catch {}
+        }
+
+        await fetchWeather(currentProof);
+      });
+    </script>
+  </body>
+</html>

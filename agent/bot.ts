@@ -3,8 +3,10 @@ import { AptosAccount, AptosClient, HexString, TxnBuilderTypes, BCS } from "apto
 const API_URL = process.env.API_URL || "http://localhost:3000/weather";
 const FULLNODE_URL = process.env.FULLNODE_URL || "http://127.0.0.1:8080/v1";
 
+const DEMO_MODE = (process.env.DEMO_MODE || "chain").toLowerCase();
+
 const PRIVATE_KEY_HEX = process.env.AGENT_PRIVATE_KEY;
-if (!PRIVATE_KEY_HEX) {
+if (DEMO_MODE !== "mock" && !PRIVATE_KEY_HEX) {
   throw new Error("Missing AGENT_PRIVATE_KEY (hex string, 64 bytes) in env");
 }
 
@@ -57,9 +59,13 @@ async function submitPayMerchantTx(client: AptosClient, account: AptosAccount, m
 
 async function main() {
   const client = new AptosClient(FULLNODE_URL);
-  const account = new AptosAccount(new HexString(PRIVATE_KEY_HEX).toUint8Array());
+  const account = PRIVATE_KEY_HEX
+    ? new AptosAccount(new HexString(PRIVATE_KEY_HEX).toUint8Array())
+    : null;
 
-  console.log(`Agent address: ${account.address().hex()}`);
+  if (account) {
+    console.log(`Agent address: ${account.address().hex()}`);
+  }
 
   const first = await fetchWeather();
   if (first.status !== 402) {
@@ -75,11 +81,28 @@ async function main() {
   const amount = params["amount"];
   if (!amount) throw new Error("x402 header missing amount");
 
-  console.log(`Paying merchant=${MERCHANT_ADDRESS} amount=${amount} via ${DEO_PACKAGE_ADDRESS}::treasury::pay_merchant`);
-  const txHash = await submitPayMerchantTx(client, account, MERCHANT_ADDRESS, amount);
-  console.log(`Submitted tx: ${txHash}`);
+  const facilitator = params["facilitator"];
 
-  const retry = await fetchWeather(txHash);
+  let proof: string;
+  if (DEMO_MODE === "mock") {
+    proof = `mock_${Date.now()}`;
+    if (facilitator) {
+      await fetch(facilitator, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ txHash: proof }),
+      }).catch(() => undefined);
+    }
+  } else {
+    if (!account) throw new Error("AGENT_PRIVATE_KEY required for chain mode");
+    console.log(
+      `Paying merchant=${MERCHANT_ADDRESS} amount=${amount} via ${DEO_PACKAGE_ADDRESS}::treasury::pay_merchant`
+    );
+    proof = await submitPayMerchantTx(client, account, MERCHANT_ADDRESS, amount);
+    console.log(`Submitted tx: ${proof}`);
+  }
+
+  const retry = await fetchWeather(proof);
   const json = await retry.json().catch(async () => ({ raw: await retry.text() }));
   console.log(`Retry status=${retry.status}`);
   console.log(JSON.stringify(json, null, 2));

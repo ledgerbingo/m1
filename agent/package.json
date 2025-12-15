@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node --loader ts-node/esm bot.ts"
   },
+  "devDependencies": {
+    "@types/node": "^22.10.2"
+  },
   "dependencies": {
     "aptos": "^1.21.0",
     "ts-node": "^10.9.2",

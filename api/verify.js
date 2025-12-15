@@ -66,10 +66,31 @@ function isTxAcceptableForDemo(tx, { expectedFunction, merchantAddress, priceAmo
   return { ok: true, optimistic: false };
 }
 
+function setCors(req, res) {
+  const origin = process.env.CORS_ORIGIN || "*";
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Authorization, X-Payment-Proof, Content-Type"
+  );
+  res.setHeader("Access-Control-Max-Age", "86400");
+  res.setHeader("Vary", "Origin");
+}
+
 module.exports = async (req, res) => {
-  if (req.method !== "POST") {
+  setCors(req, res);
+  res.setHeader("Cache-Control", "no-store");
+
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    res.end();
+    return;
+  }
+
+  if (req.method !== "POST" && req.method !== "GET") {
     res.statusCode = 405;
-    res.setHeader("Allow", "POST");
+    res.setHeader("Allow", "GET,POST,OPTIONS");
     res.end("Method Not Allowed");
     return;
   }
@@ -83,17 +104,27 @@ module.exports = async (req, res) => {
 
   const DEMO_MODE = (process.env.DEMO_MODE || "chain").toLowerCase();
 
-  let body;
-  try {
-    body = await readJsonBody(req);
-  } catch (e) {
-    res.statusCode = 400;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ ok: false, error: "invalid_json" }));
-    return;
+  let txHash;
+  if (req.method === "GET") {
+    try {
+      const url = new URL(req.url, "http://localhost");
+      txHash = url.searchParams.get("txHash");
+    } catch {
+      txHash = null;
+    }
+  } else {
+    let body;
+    try {
+      body = await readJsonBody(req);
+    } catch (e) {
+      res.statusCode = 400;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ ok: false, error: "invalid_json" }));
+      return;
+    }
+    txHash = body?.txHash;
   }
 
-  const txHash = body?.txHash;
   if (!txHash) {
     res.statusCode = 400;
     res.setHeader("Content-Type", "application/json");
