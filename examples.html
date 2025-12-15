@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DEO — Examples & Playground</title>
+    <link rel="stylesheet" href="/site.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="nav">
+        <a class="brand" href="/">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="brandTitle">
+            <strong>DEO</strong>
+            <span>Examples & playground</span>
+          </div>
+        </a>
+        <div class="navLinks">
+          <a class="pill" href="/">Home</a>
+          <a class="pill" href="/standard">Service Standard</a>
+          <a class="pill" href="/examples">Examples</a>
+          <a class="pill" href="/catalog">Catalog</a>
+          <a class="pill" href="/status">Status</a>
+          <a class="btn primary" href="#playground">Try the flow</a>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="card">
+          <div class="sectionTitle">Examples</div>
+          <div class="h1">Run the x402 flow end-to-end.</div>
+          <p class="lead">
+            This playground demonstrates the DEO handshake:
+            request a premium endpoint, receive a 402 challenge, produce a proof (a Movement transaction hash in chain mode),
+            verify it, then retry and receive the premium response.
+          </p>
+          <div class="section" style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn primary" href="#playground">Open playground</a>
+            <a class="btn" href="#recipes">CLI recipes</a>
+            <a class="btn" href="#patterns">Integration patterns</a>
+          </div>
+          <div class="section" style="margin-top: 10px;">
+            <div class="pill">402 challenge</div>
+            <div class="pill">Proof verification</div>
+            <div class="pill">Receipts</div>
+            <div class="pill">Payment history</div>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <img class="heroArt" src="/assets/deo-cases.svg" alt="DEO examples illustration" />
+        </div>
+      </div>
+
+      <div id="playground" class="section">
+        <div class="sectionTitle">Playground</div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="k">Product</div>
+            <div class="muted" style="margin-top: 8px;">Loaded from <span class="k">GET /catalog</span>.</div>
+            <div style="height: 12px"></div>
+            <select id="product" class="input"></select>
+
+            <div style="height: 12px"></div>
+            <div class="k">Proof (tx hash)</div>
+            <div class="muted" style="margin-top: 8px; line-height: 1.6;">
+              In preview mode, any string can act as a proof. In chain mode, paste a real transaction hash.
+            </div>
+            <div style="height: 10px"></div>
+            <input id="proof" class="input" placeholder="tx hash / proof" />
+
+            <div style="height: 14px"></div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn primary" id="btnRequest">Request (no proof)</button>
+              <button class="btn" id="btnGen">Generate preview proof</button>
+              <button class="btn" id="btnVerify">Verify proof</button>
+              <button class="btn" id="btnRetry">Retry with proof</button>
+            </div>
+
+            <div style="height: 14px"></div>
+            <div class="k">Service snapshot</div>
+            <pre style="margin-top: 10px;"><code id="statusOut">(loading...)</code></pre>
+          </div>
+
+          <div class="card">
+            <div class="k">HTTP response</div>
+            <pre style="margin-top: 10px;"><code id="out">Click “Request (no proof)”.</code></pre>
+
+            <div style="height: 14px"></div>
+            <div class="k">WWW-Authenticate</div>
+            <pre style="margin-top: 10px;"><code id="challengeOut">(none)</code></pre>
+
+            <div style="height: 14px"></div>
+            <div class="k">Verifier result</div>
+            <pre style="margin-top: 10px;"><code id="verifyOut">(none)</code></pre>
+          </div>
+        </div>
+
+        <div class="grid2 section">
+          <div class="card">
+            <div class="k">Receipt</div>
+            <pre style="margin-top: 10px;"><code id="receiptOut">(none)</code></pre>
+          </div>
+
+          <div class="card">
+            <div class="k">Payments</div>
+            <pre style="margin-top: 10px;"><code id="paymentsOut">(none)</code></pre>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="card" style="padding: 0; overflow: hidden;">
+            <img class="heroArt" src="/assets/deo-flow.svg" alt="402 challenge to proof to unlock flow" />
+          </div>
+        </div>
+      </div>
+
+      <div id="recipes" class="section">
+        <div class="sectionTitle">CLI recipes</div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="k">Discover pricing</div>
+            <pre style="margin-top: 10px;"><code id="curlCatalog">(loading...)</code></pre>
+          </div>
+
+          <div class="card">
+            <div class="k">Call a paid endpoint (expect 402)</div>
+            <pre style="margin-top: 10px;"><code id="curlPaid">(loading...)</code></pre>
+          </div>
+        </div>
+
+        <div class="grid2 section">
+          <div class="card">
+            <div class="k">Verify a proof</div>
+            <pre style="margin-top: 10px;"><code id="curlVerify">(loading...)</code></pre>
+          </div>
+
+          <div class="card">
+            <div class="k">Receipt and history</div>
+            <pre style="margin-top: 10px;"><code id="curlReceipt">(loading...)</code></pre>
+            <div style="height: 10px"></div>
+            <pre><code id="curlPayments">(loading...)</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="patterns" class="section">
+        <div class="sectionTitle">Integration patterns</div>
+
+        <div class="grid3">
+          <div class="card">
+            <div class="k">Paid data APIs</div>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              Market data, weather, proprietary datasets, or internal services. Agents discover a price in <span class="k">/catalog</span>
+              and can programmatically retry after paying.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="k">Paid inference</div>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              Meter LLM calls, embeddings, or vision models with the same handshake.
+              Receipts provide per-call auditing for billing and support.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="k">Paid actions</div>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              Automation tools and agent execution. Payment proof becomes a universal authorization primitive for sensitive operations.
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="card">
+            <div class="k">Agent algorithm</div>
+            <pre style="margin-top: 10px;"><code>1. Call premium endpoint.
+2. If 402: parse WWW-Authenticate (x402).
+3. Submit on-chain payment and obtain tx hash.
+4. Verify with /verify (fast or final).
+5. Retry premium endpoint with X-Payment-Proof.
+6. Fetch /receipt for a normalized audit record.
+7. Use /payments for history.</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        Tip: Open <a href="/standard">Service Standard</a> for a live spec view of endpoints and JSON responses.
+      </div>
+    </div>
+
+    <script>
+      const productEl = document.getElementById("product");
+      const proofEl = document.getElementById("proof");
+
+      const btnRequest = document.getElementById("btnRequest");
+      const btnGen = document.getElementById("btnGen");
+      const btnVerify = document.getElementById("btnVerify");
+      const btnRetry = document.getElementById("btnRetry");
+
+      const statusOut = document.getElementById("statusOut");
+      const out = document.getElementById("out");
+      const challengeOut = document.getElementById("challengeOut");
+      const verifyOut = document.getElementById("verifyOut");
+      const receiptOut = document.getElementById("receiptOut");
+      const paymentsOut = document.getElementById("paymentsOut");
+
+      const curlCatalog = document.getElementById("curlCatalog");
+      const curlPaid = document.getElementById("curlPaid");
+      const curlVerify = document.getElementById("curlVerify");
+      const curlReceipt = document.getElementById("curlReceipt");
+      const curlPayments = document.getElementById("curlPayments");
+
+      let products = [];
+      let lastChallengeHeader = "";
+      let lastFacilitator = "";
+
+      function parseChallenge(header) {
+        const params = {};
+        const re = /(\w+)="([^"]+)"/g;
+        let m;
+        while ((m = re.exec(String(header || ""))) !== null) params[m[1]] = m[2];
+        return params;
+      }
+
+      async function fetchJsonSafe(path, init) {
+        const res = await fetch(path, init);
+        const text = await res.text();
+        let body;
+        try { body = JSON.parse(text); } catch { body = { raw: text }; }
+        return { status: res.status, headers: res.headers, body };
+      }
+
+      function selectedProduct() {
+        const idx = Number(productEl.value || 0);
+        return products[idx] || null;
+      }
+
+      function setCurlSnippets() {
+        const base = location.origin;
+        const p = selectedProduct();
+        const path = p?.path || "/weather";
+
+        curlCatalog.textContent = `curl -s ${base}/catalog`;
+        curlPaid.textContent = `curl -i ${base}${path}`;
+        curlVerify.textContent = `curl -s ${base}/verify?txHash=<proof>`;
+        curlReceipt.textContent = `curl -s ${base}/receipt?txHash=<proof>`;
+        curlPayments.textContent = `curl -s ${base}/payments`;
+      }
+
+      async function requestPaid(proof) {
+        const p = selectedProduct();
+        const method = p?.method || "GET";
+        const path = p?.path || "/weather";
+
+        const headers = {};
+        if (proof) {
+          headers["X-Payment-Proof"] = proof;
+          headers["Authorization"] = `x402 ${proof}`;
+        }
+
+        const res = await fetchJsonSafe(path, { method, headers });
+        out.textContent = JSON.stringify({ status: res.status, body: res.body }, null, 2);
+
+        lastChallengeHeader = res.headers.get("www-authenticate") || "";
+        challengeOut.textContent = lastChallengeHeader || "(none)";
+        const params = parseChallenge(lastChallengeHeader);
+        lastFacilitator = params.facilitator || "";
+
+        return res;
+      }
+
+      async function verifyProof(proof) {
+        if (!proof) {
+          verifyOut.textContent = JSON.stringify({ ok: false, error: "missing_proof" }, null, 2);
+          return;
+        }
+        const res = await fetchJsonSafe(`/verify?txHash=${encodeURIComponent(proof)}`);
+        verifyOut.textContent = JSON.stringify(res.body, null, 2);
+      }
+
+      async function loadReceiptAndPayments(proof) {
+        if (!proof) return;
+
+        const receipt = await fetchJsonSafe(`/receipt?txHash=${encodeURIComponent(proof)}`).catch(() => ({ body: { ok: false, error: "unavailable" } }));
+        receiptOut.textContent = JSON.stringify(receipt.body, null, 2);
+
+        const payer = receipt?.body?.receipt?.payer;
+        const paymentsPath = payer ? `/payments?payer=${encodeURIComponent(payer)}` : "/payments";
+        const payments = await fetchJsonSafe(paymentsPath).catch(() => ({ body: { ok: false, error: "unavailable" } }));
+        paymentsOut.textContent = JSON.stringify(payments.body, null, 2);
+
+        const base = location.origin;
+        curlReceipt.textContent = `curl -s ${base}/receipt?txHash=${proof}`;
+        curlPayments.textContent = payer
+          ? `curl -s ${base}/payments?payer=${payer}`
+          : `curl -s ${base}/payments`;
+      }
+
+      async function init() {
+        setCurlSnippets();
+
+        const [st, cat] = await Promise.all([
+          fetchJsonSafe("/status").catch(() => ({ body: { error: "unavailable" } })),
+          fetchJsonSafe("/catalog").catch(() => ({ body: { error: "unavailable" } })),
+        ]);
+
+        statusOut.textContent = JSON.stringify(st.body, null, 2);
+
+        products = Array.isArray(cat?.body?.products) ? cat.body.products : [];
+        if (!products.length) {
+          products = [{ id: "weather.premium", name: "Premium Weather Feed", method: "GET", path: "/weather", price: {} }];
+        }
+
+        productEl.innerHTML = "";
+        products.forEach((p, i) => {
+          const opt = document.createElement("option");
+          const price = p?.price?.amount && p?.price?.token ? ` — ${p.price.amount} ${p.price.token}` : "";
+          opt.value = String(i);
+          opt.textContent = `${p.name || p.id} — ${p.method || "GET"} ${p.path || ""}${price}`;
+          productEl.appendChild(opt);
+        });
+
+        productEl.addEventListener("change", () => {
+          setCurlSnippets();
+        });
+
+        setCurlSnippets();
+      }
+
+      btnRequest.addEventListener("click", async () => {
+        verifyOut.textContent = "(none)";
+        receiptOut.textContent = "(none)";
+        paymentsOut.textContent = "(none)";
+        await requestPaid();
+      });
+
+      btnGen.addEventListener("click", async () => {
+        const proof = `proof_${Date.now()}`;
+        proofEl.value = proof;
+
+        if (lastFacilitator) {
+          await fetch(lastFacilitator, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ txHash: proof }),
+          }).catch(() => undefined);
+        }
+
+        await verifyProof(proof);
+      });
+
+      btnVerify.addEventListener("click", async () => {
+        await verifyProof(proofEl.value);
+      });
+
+      btnRetry.addEventListener("click", async () => {
+        const proof = proofEl.value;
+        await requestPaid(proof);
+        await verifyProof(proof);
+        await loadReceiptAndPayments(proof);
+      });
+
+      init().catch(() => undefined);
+    </script>
+  </body>
+</html>

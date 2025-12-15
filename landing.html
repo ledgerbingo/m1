@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DEO — Autonomous Payments for AI Agents</title>
+    <link rel="stylesheet" href="/site.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="nav">
+        <a class="brand" href="/">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="brandTitle">
+            <strong>DEO</strong>
+            <span>Autonomous payments for agents</span>
+          </div>
+        </a>
+        <div class="navLinks">
+          <a class="pill" href="/standard">Service Standard</a>
+          <a class="pill" href="/examples">Examples</a>
+          <a class="pill" href="/catalog">Catalog</a>
+          <a class="pill" href="/status">Status</a>
+          <a class="btn primary" href="/examples#playground">Open Playground</a>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="card">
+          <div class="sectionTitle">DEO</div>
+          <div class="h1">Paid endpoints that feel instant for agents.</div>
+          <p class="lead">
+            DEO standardizes a simple handshake for pay-per-call APIs:
+            the server issues an HTTP 402 challenge, the client produces an on-chain proof, and the request is retried with
+            verifiable authorization.
+          </p>
+
+          <div class="section" style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn primary" href="/standard">Read the standard</a>
+            <a class="btn" href="/examples#playground">Try the playground</a>
+          </div>
+
+          <div class="section" style="margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap;">
+            <div class="pill">HTTP 402 challenge</div>
+            <div class="pill">Movement settlement proof</div>
+            <div class="pill">Fast or final verification</div>
+            <div class="pill">Receipts + history</div>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <img class="heroArt" src="/assets/deo-hero.svg" alt="DEO illustration showing agent, service, and Movement settlement" />
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle">DEO in 30 seconds</div>
+        <div class="grid3">
+          <div class="card">
+            <div class="k">1) Challenge</div>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              Premium endpoints respond with <span class="k">402 Payment Required</span> and a machine-readable
+              <span class="k">WWW-Authenticate</span> header that describes price, token, and verifier.
+            </div>
+          </div>
+          <div class="card">
+            <div class="k">2) Proof</div>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              The client submits an on-chain payment (or authorization action) and uses the resulting transaction hash
+              as a proof.
+            </div>
+          </div>
+          <div class="card">
+            <div class="k">3) Unlock</div>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              Retry the original request with <span class="k">X-Payment-Proof</span>. The service verifies and returns the
+              premium response immediately, plus receipts and history endpoints for auditing.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle">Flow</div>
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <img class="heroArt" src="/assets/deo-flow.svg" alt="HTTP 402 to proof to unlock diagram" />
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle">Live service snapshot</div>
+        <div class="grid2">
+          <div class="card">
+            <div class="k">GET /status</div>
+            <pre style="margin-top: 10px;"><code id="statusOut">(loading...)</code></pre>
+            <div class="section" style="display:flex; gap:10px; flex-wrap:wrap;">
+              <a class="btn" href="/status">Open JSON</a>
+              <a class="btn" href="/standard#live">See on the Standard page</a>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="k">GET /catalog</div>
+            <pre style="margin-top: 10px;"><code id="catalogOut">(loading...)</code></pre>
+            <div class="section" style="display:flex; gap:10px; flex-wrap:wrap;">
+              <a class="btn" href="/catalog">Open JSON</a>
+              <a class="btn" href="/examples#recipes">Copy CLI recipes</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle">Start with curl</div>
+        <div class="grid2">
+          <div class="card">
+            <div class="k">Call a paid endpoint (expect 402)</div>
+            <pre style="margin-top: 10px;"><code id="curlPaid">(loading...)</code></pre>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              The 402 response includes a challenge header that tells clients what proof is required.
+            </div>
+          </div>
+          <div class="card">
+            <div class="k">Retry with a proof</div>
+            <pre style="margin-top: 10px;"><code id="curlRetry">(loading...)</code></pre>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              After payment, provide the tx hash via <span class="k">X-Payment-Proof</span>. Use <span class="k">/receipt</span>
+              for a normalized audit record.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle">Where to go next</div>
+        <div class="grid2">
+          <div class="card">
+            <div class="k">Service Standard</div>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              The generalized DEO specification with live outputs from <span class="k">/status</span> and <span class="k">/catalog</span>.
+            </div>
+            <div class="section"><a class="btn primary" href="/standard">Open Service Standard</a></div>
+          </div>
+          <div class="card">
+            <div class="k">Examples & Playground</div>
+            <div class="muted" style="margin-top: 10px; line-height: 1.7;">
+              Run the request → 402 → proof → retry flow. Inspect receipts and payment history.
+            </div>
+            <div class="section"><a class="btn primary" href="/examples#playground">Open Playground</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        DEO is designed for composability: premium endpoints remain custom, while pricing discovery and verification are standardized.
+      </div>
+    </div>
+
+    <script>
+      async function fetchJsonSafe(path) {
+        const res = await fetch(path);
+        const text = await res.text();
+        let body;
+        try { body = JSON.parse(text); } catch { body = { raw: text }; }
+        return { status: res.status, body };
+      }
+
+      async function init() {
+        const base = location.origin;
+        document.getElementById("curlPaid").textContent = `curl -i ${base}/weather`;
+        document.getElementById("curlRetry").textContent = `curl -i ${base}/weather -H "X-Payment-Proof: <proof>"`;
+
+        const [st, cat] = await Promise.all([
+          fetchJsonSafe("/status").catch(() => ({ body: { error: "unavailable" } })),
+          fetchJsonSafe("/catalog").catch(() => ({ body: { error: "unavailable" } })),
+        ]);
+
+        document.getElementById("statusOut").textContent = JSON.stringify(st.body, null, 2);
+        document.getElementById("catalogOut").textContent = JSON.stringify(cat.body, null, 2);
+      }
+
+      init().catch(() => undefined);
+    </script>
+  </body>
+</html>
