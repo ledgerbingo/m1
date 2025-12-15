@@ -28,7 +28,7 @@ async function getTxByHash(fullnodeUrl, txHash) {
   return res.json();
 }
 
-function isTxAcceptableForDemo(tx, { expectedFunction, merchantAddress, priceAmount }) {
+function isTxAcceptableForAccess(tx, { expectedFunction, merchantAddress, priceAmount }) {
   if (!tx || typeof tx !== "object") return { ok: false, reason: "bad_tx" };
 
   if (tx.type === "pending_transaction") {
@@ -102,7 +102,7 @@ module.exports = async (req, res) => {
   const EXPECTED_FUNCTION = `${DEO_PACKAGE_ADDRESS}::treasury::pay_merchant`;
   const MERCHANT_ADDRESS = process.env.MERCHANT_ADDRESS || "0xMERCHANT";
 
-  const DEMO_MODE = (process.env.DEMO_MODE || "chain").toLowerCase();
+  const SERVICE_MODE = (process.env.SERVICE_MODE || "preview").toLowerCase();
 
   let txHash;
   if (req.method === "GET") {
@@ -132,16 +132,16 @@ module.exports = async (req, res) => {
     return;
   }
 
-  if (DEMO_MODE === "mock") {
+  if (SERVICE_MODE === "preview") {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ ok: true, optimistic: true, mode: "mock", txHash }));
+    res.end(JSON.stringify({ ok: true, mode: "preview", proof: txHash }));
     return;
   }
 
   try {
     const tx = await getTxByHash(FULLNODE_URL, txHash);
-    const verdict = isTxAcceptableForDemo(tx, {
+    const verdict = isTxAcceptableForAccess(tx, {
       expectedFunction: EXPECTED_FUNCTION,
       merchantAddress: MERCHANT_ADDRESS,
       priceAmount: PRICE_AMOUNT,
@@ -149,10 +149,10 @@ module.exports = async (req, res) => {
 
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ ok: verdict.ok, optimistic: !!verdict.optimistic, reason: verdict.reason || null, tx }));
+    res.end(JSON.stringify({ ok: verdict.ok, mode: verdict.optimistic ? "fast" : "final" }));
   } catch (e) {
     res.statusCode = 502;
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ ok: false, error: "verification_failed", detail: e.message }));
+    res.end(JSON.stringify({ ok: false, error: "verification_failed" }));
   }
 };

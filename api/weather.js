@@ -51,7 +51,7 @@ async function getTxByHash(fullnodeUrl, txHash) {
   return res.json();
 }
 
-function isTxAcceptableForDemo(tx, { expectedFunction, merchantAddress, priceAmount }) {
+function isTxAcceptableForAccess(tx, { expectedFunction, merchantAddress, priceAmount }) {
   if (!tx || typeof tx !== "object") return { ok: false, reason: "bad_tx" };
 
   if (tx.type === "pending_transaction") {
@@ -89,13 +89,12 @@ function isTxAcceptableForDemo(tx, { expectedFunction, merchantAddress, priceAmo
   return { ok: true, optimistic: false };
 }
 
-function getMockWeather() {
+function getPreviewWeather() {
   return {
     premium: true,
     city: "Lisbon",
     temperature_c: 22,
     condition: "Clear",
-    provider: "mock",
   };
 }
 
@@ -126,7 +125,7 @@ module.exports = async (req, res) => {
   const EXPECTED_FUNCTION = `${DEO_PACKAGE_ADDRESS}::treasury::pay_merchant`;
   const MERCHANT_ADDRESS = process.env.MERCHANT_ADDRESS || "0xMERCHANT";
 
-  const DEMO_MODE = (process.env.DEMO_MODE || "chain").toLowerCase();
+  const SERVICE_MODE = (process.env.SERVICE_MODE || "preview").toLowerCase();
 
   const proof = getProof(req);
   if (!proof) {
@@ -139,24 +138,34 @@ module.exports = async (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.end(
       JSON.stringify({
-        error: "Payment required",
-        scheme: "x402",
-        hint: "Send X-Payment-Proof: <txHash> after paying on-chain",
+        error: "authorization_required",
+        message: "This endpoint is gated. Present a proof to unlock premium data.",
+        how_to: {
+          attach_proof_header: "X-Payment-Proof",
+          or_authorization_header: "Authorization: x402 <proof>",
+          verify_url: facilitator,
+        },
       })
     );
     return;
   }
 
-  if (DEMO_MODE === "mock") {
+  if (SERVICE_MODE === "preview") {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ ...getMockWeather(), settlement: "mock", txHash: proof }));
+    res.end(
+      JSON.stringify({
+        ...getPreviewWeather(),
+        proof,
+        mode: "preview",
+      })
+    );
     return;
   }
 
   try {
     const tx = await getTxByHash(FULLNODE_URL, proof);
-    const verdict = isTxAcceptableForDemo(tx, {
+    const verdict = isTxAcceptableForAccess(tx, {
       expectedFunction: EXPECTED_FUNCTION,
       merchantAddress: MERCHANT_ADDRESS,
       priceAmount: PRICE_AMOUNT,
@@ -165,23 +174,21 @@ module.exports = async (req, res) => {
     if (!verdict.ok) {
       res.statusCode = 401;
       res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify({ error: "Invalid payment proof", reason: verdict.reason }));
+      res.end(
+        JSON.stringify({
+          error: "proof_invalid",
+          message: "The proof did not match the required authorization.",
+        })
+      );
       return;
     }
 
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
-    res.end(
-      JSON.stringify({
-        ...getMockWeather(),
-        provider: "demo",
-        settlement: verdict.optimistic ? "optimistic" : "final",
-        txHash: proof,
-      })
-    );
+    res.end(JSON.stringify({ ...getPreviewWeather(), proof, mode: verdict.optimistic ? "fast" : "final" }));
   } catch (e) {
     res.statusCode = 502;
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "verification_failed", detail: e.message }));
+    res.end(JSON.stringify({ error: "verification_failed", message: "Unable to verify proof." }));
   }
 };

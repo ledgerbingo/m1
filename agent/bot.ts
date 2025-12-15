@@ -3,10 +3,10 @@ import { AptosAccount, AptosClient, HexString, TxnBuilderTypes, BCS } from "apto
 const API_URL = process.env.API_URL || "http://localhost:3000/weather";
 const FULLNODE_URL = process.env.FULLNODE_URL || "http://127.0.0.1:8080/v1";
 
-const DEMO_MODE = (process.env.DEMO_MODE || "chain").toLowerCase();
+const SERVICE_MODE = (process.env.SERVICE_MODE || "preview").toLowerCase();
 
 const PRIVATE_KEY_HEX = process.env.AGENT_PRIVATE_KEY;
-if (DEMO_MODE !== "mock" && !PRIVATE_KEY_HEX) {
+if (SERVICE_MODE !== "preview" && !PRIVATE_KEY_HEX) {
   throw new Error("Missing AGENT_PRIVATE_KEY (hex string, 64 bytes) in env");
 }
 
@@ -84,8 +84,8 @@ async function main() {
   const facilitator = params["facilitator"];
 
   let proof: string;
-  if (DEMO_MODE === "mock") {
-    proof = `mock_${Date.now()}`;
+  if (SERVICE_MODE === "preview") {
+    proof = `proof_${Date.now()}`;
     if (facilitator) {
       await fetch(facilitator, {
         method: "POST",

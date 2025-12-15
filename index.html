@@ -3,61 +3,328 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DEO x402 Demo (Option A)</title>
+    <title>DEO — Autonomous Payments for AI Agents</title>
     <style>
-      body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 40px; color: #111; }
-      .card { max-width: 860px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }
-      .row { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
-      button { padding: 10px 14px; border-radius: 10px; border: 1px solid #d1d5db; background: #111; color: #fff; cursor: pointer; }
-      button.secondary { background: #fff; color: #111; }
-      pre { background: #0b1020; color: #e5e7eb; padding: 14px; border-radius: 12px; overflow: auto; }
+      :root {
+        --bg: #070a13;
+        --panel: rgba(255,255,255,0.06);
+        --panel2: rgba(255,255,255,0.10);
+        --text: rgba(255,255,255,0.92);
+        --muted: rgba(255,255,255,0.62);
+        --line: rgba(255,255,255,0.12);
+        --accent: #7c3aed;
+        --accent2: #22c55e;
+        --warn: #f59e0b;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        background:
+          radial-gradient(1200px 800px at 20% 10%, rgba(124, 58, 237, 0.28), transparent 55%),
+          radial-gradient(1000px 700px at 80% 20%, rgba(34, 197, 94, 0.18), transparent 55%),
+          radial-gradient(900px 700px at 60% 90%, rgba(59, 130, 246, 0.16), transparent 55%),
+          var(--bg);
+      }
+
+      a { color: inherit; }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 42px 18px 64px; }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 26px;
+      }
+      .brand { display: flex; align-items: center; gap: 12px; }
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(124,58,237,1), rgba(34,197,94,1));
+        box-shadow: 0 18px 60px rgba(124,58,237,0.25);
+      }
+      .brand h1 { font-size: 14px; margin: 0; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.82); }
+      .badge {
+        font-size: 12px;
+        color: rgba(255,255,255,0.72);
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.04);
+        padding: 6px 10px;
+        border-radius: 999px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 16px;
+        align-items: stretch;
+        margin-bottom: 18px;
+      }
+      @media (max-width: 920px) {
+        .hero { grid-template-columns: 1fr; }
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 18px;
+        padding: 18px;
+        backdrop-filter: blur(10px);
+      }
+      .heroTitle {
+        font-size: 44px;
+        line-height: 1.05;
+        margin: 6px 0 10px;
+        letter-spacing: -0.03em;
+      }
+      .heroLead {
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      .pillRow { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+      .pill {
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.03);
+        color: rgba(255,255,255,0.78);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+      }
+
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      @media (max-width: 920px) { .grid2 { grid-template-columns: 1fr; } }
+
+      .h {
+        margin: 0 0 10px;
+        font-size: 14px;
+        color: rgba(255,255,255,0.82);
+        letter-spacing: 0.10em;
+        text-transform: uppercase;
+      }
+      .k { color: rgba(255,255,255,0.92); font-weight: 600; }
+      .muted { color: var(--muted); }
+
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+      button {
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.05);
+        color: var(--text);
+        cursor: pointer;
+        transition: transform 120ms ease, background 120ms ease;
+      }
+      button:hover { transform: translateY(-1px); background: rgba(255,255,255,0.08); }
+      button.primary {
+        background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(34,197,94,0.92));
+        border-color: rgba(255,255,255,0.14);
+      }
+      button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+      pre {
+        background: rgba(3, 6, 14, 0.75);
+        border: 1px solid rgba(255,255,255,0.10);
+        color: rgba(255,255,255,0.92);
+        padding: 14px;
+        border-radius: 16px;
+        overflow: auto;
+        margin: 0;
+      }
       code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-      .muted { color: #6b7280; }
-      .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid #e5e7eb; font-size: 12px; }
-      .ok { background: #ecfdf5; border-color: #a7f3d0; }
-      .warn { background: #fffbeb; border-color: #fcd34d; }
+
+      .step {
+        display: flex;
+        gap: 10px;
+        padding: 12px;
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.10);
+        background: rgba(255,255,255,0.03);
+      }
+      .dot {
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        margin-top: 2px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.16);
+      }
+      .dot.ok { background: rgba(34,197,94,0.25); border-color: rgba(34,197,94,0.45); }
+      .dot.warn { background: rgba(245,158,11,0.22); border-color: rgba(245,158,11,0.45); }
+      .dot.off { background: rgba(255,255,255,0.06); }
+
+      .footer {
+        margin-top: 22px;
+        color: rgba(255,255,255,0.55);
+        font-size: 12px;
+      }
     </style>
   </head>
   <body>
-    <div class="card">
-      <h1 style="margin-top: 0;">DEO x402 Demo <span class="pill ok">Option A (Mock)</span></h1>
-      <div class="muted">
-        This is a Vercel-native demo. The API returns <code>402</code> with <code>WWW-Authenticate: x402 ...</code>.
-        Clicking “Pay (mock)” generates a proof and retries.
+    <div class="wrap">
+      <div class="nav">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>DEO</h1>
+            <div class="muted" style="font-size: 13px; margin-top: 2px;">Autonomous payments for AI agents</div>
+          </div>
+        </div>
+        <div class="badge">Product preview</div>
       </div>
 
-      <div class="row">
-        <button id="btnFetch">Fetch /weather</button>
-        <button class="secondary" id="btnPay" disabled>Pay (mock) + Retry</button>
+      <div class="hero">
+        <div class="card">
+          <div class="h">Vision</div>
+          <div class="heroTitle">AI agents that can pay for the world.</div>
+          <p class="heroLead">
+            DEO is an execution layer that lets an automated agent unlock a paid API endpoint by presenting a cryptographic proof of authorization.
+            In production, the proof is created by a transaction that transfers stable-value funds to the service.
+            For reliability here, the site runs in a simulation mode while preserving the exact HTTP flow.
+          </p>
+
+          <div class="pillRow">
+            <div class="pill">HTTP 402 challenge</div>
+            <div class="pill">Proof-based access</div>
+            <div class="pill">Autonomous retry</div>
+            <div class="pill">Fast settlement path</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="h">What you’re seeing</div>
+          <div style="border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.03); border-radius: 16px; padding: 12px; margin-bottom: 12px;">
+            <svg viewBox="0 0 520 180" width="100%" height="120" role="img" aria-label="Agent to service authorization flow illustration" style="display:block;">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#7c3aed" stop-opacity="0.95" />
+                  <stop offset="1" stop-color="#22c55e" stop-opacity="0.85" />
+                </linearGradient>
+                <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="10" />
+                </filter>
+              </defs>
+              <circle cx="90" cy="90" r="44" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.16)" />
+              <circle cx="90" cy="90" r="20" fill="url(#g1)" />
+              <text x="90" y="155" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-size="12" font-family="ui-sans-serif, system-ui">Agent</text>
+
+              <circle cx="430" cy="90" r="44" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.16)" />
+              <rect x="418" y="78" width="24" height="24" rx="8" fill="url(#g1)" />
+              <text x="430" y="155" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-size="12" font-family="ui-sans-serif, system-ui">API</text>
+
+              <path d="M140 90 C 210 40, 310 40, 380 90" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2" />
+              <path d="M140 90 C 210 140, 310 140, 380 90" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="2" />
+
+              <circle cx="260" cy="60" r="22" fill="rgba(124,58,237,0.18)" filter="url(#blur)" />
+              <circle cx="260" cy="120" r="22" fill="rgba(34,197,94,0.16)" filter="url(#blur)" />
+
+              <rect x="236" y="78" width="48" height="24" rx="12" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.14)" />
+              <text x="260" y="94" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-size="12" font-family="ui-sans-serif, system-ui">Proof</text>
+            </svg>
+          </div>
+          <div class="step">
+            <div class="dot warn" id="s1"></div>
+            <div>
+              <div class="k">1) Request premium endpoint</div>
+              <div class="muted">The service responds with 402 and a challenge header describing the required proof.</div>
+            </div>
+          </div>
+          <div style="height: 10px"></div>
+          <div class="step">
+            <div class="dot off" id="s2"></div>
+            <div>
+              <div class="k">2) Agent produces proof</div>
+              <div class="muted">A wallet signs an authorization action; the resulting proof is sent back to the service.</div>
+            </div>
+          </div>
+          <div style="height: 10px"></div>
+          <div class="step">
+            <div class="dot off" id="s3"></div>
+            <div>
+              <div class="k">3) Unlock and serve data</div>
+              <div class="muted">The service verifies the proof and returns the premium response.</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="row muted">
-        <div>Current proof: <code id="proof">(none)</code></div>
+      <div class="grid2">
+        <div class="card">
+          <div class="h">Try it</div>
+          <div class="muted" style="margin-bottom: 12px;">
+            Click the request button. You’ll receive a 402 response plus a challenge header. Then click authorize to attach a proof and unlock the response.
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="btnFetch">Request premium endpoint</button>
+            <button id="btnAuthorize" disabled>Authorize and retry</button>
+          </div>
+
+          <div style="margin-top: 14px;" class="muted">Current proof</div>
+          <pre style="margin-top: 8px;"><code id="proof">(none)</code></pre>
+
+          <div style="margin-top: 14px;" class="muted">Challenge header</div>
+          <pre style="margin-top: 8px;"><code id="auth">(none)</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="h">Response</div>
+          <pre><code id="out">Click “Request premium endpoint”.</code></pre>
+
+          <div style="margin-top: 14px;" class="muted">Command line</div>
+          <pre style="margin-top: 8px;"><code id="curl">curl -i ${location.origin}/weather</code></pre>
+        </div>
       </div>
 
-      <h3>Last response</h3>
-      <pre><code id="out">(click Fetch)</code></pre>
+      <div class="card" style="margin-top: 16px;">
+        <div class="h">How the product works (end-to-end)</div>
+        <div class="muted" style="line-height: 1.7;">
+          <div style="margin-bottom: 10px;"><span class="k">Service side:</span> A paid endpoint answers unauthenticated requests with a 402 response and a challenge header. That header tells a client where to verify and what kind of proof is expected.</div>
+          <div style="margin-bottom: 10px;"><span class="k">Agent side:</span> The agent reads the challenge, generates the proof (in production: by submitting an authorization action), and retries the original request with the proof attached.</div>
+          <div style="margin-bottom: 10px;"><span class="k">Verification:</span> The verifier checks the proof and returns OK. Once verified, the endpoint serves the premium payload immediately.</div>
+          <div><span class="k">Why this matters:</span> You get a clean bridge between modern HTTP services and autonomous software operators, enabling pay-per-call APIs that feel instant for agents.</div>
+        </div>
 
-      <h3>Last WWW-Authenticate</h3>
-      <pre><code id="auth">(none)</code></pre>
+        <div style="height: 14px"></div>
+        <div class="h">Concrete example</div>
+        <div class="muted" style="line-height: 1.7;">
+          <div style="margin-bottom: 10px;"><span class="k">Endpoint:</span> <code>GET /weather</code> returns premium weather data.</div>
+          <div style="margin-bottom: 10px;"><span class="k">First request:</span> the server returns <code>402</code> plus <code>WWW-Authenticate</code>. This is the machine-readable challenge your agent uses to decide what to do next.</div>
+          <div><span class="k">Second request:</span> the agent retries with <code>X-Payment-Proof</code>. If the proof verifies, the server responds with the premium JSON payload.</div>
+        </div>
+      </div>
 
-      <h3 class="muted">cURL (same flow)</h3>
-      <pre><code id="curl">curl -i ${location.origin}/weather</code></pre>
+      <div class="footer">Built as a minimal, single-click experience for clarity and reliability.</div>
     </div>
 
     <script>
-      const out = document.getElementById('out');
-      const auth = document.getElementById('auth');
-      const btnFetch = document.getElementById('btnFetch');
-      const btnPay = document.getElementById('btnPay');
-      const proofEl = document.getElementById('proof');
-      const curlEl = document.getElementById('curl');
+      const out = document.getElementById("out");
+      const auth = document.getElementById("auth");
+      const btnFetch = document.getElementById("btnFetch");
+      const btnAuthorize = document.getElementById("btnAuthorize");
+      const proofEl = document.getElementById("proof");
+      const curlEl = document.getElementById("curl");
+      const s1 = document.getElementById("s1");
+      const s2 = document.getElementById("s2");
+      const s3 = document.getElementById("s3");
 
-      let lastAuthHeader = '';
-      let lastFacilitator = '';
-      let currentProof = '';
+      let lastAuthHeader = "";
+      let lastFacilitator = "";
 
-      function parseX402(header) {
+      function setStep(step) {
+        const on = (el) => { el.classList.remove("off"); el.classList.add("ok"); el.classList.remove("warn"); };
+        const warn = (el) => { el.classList.remove("off"); el.classList.add("warn"); el.classList.remove("ok"); };
+        const off = (el) => { el.classList.add("off"); el.classList.remove("ok"); el.classList.remove("warn"); };
+
+        if (step === 1) { warn(s1); off(s2); off(s3); }
+        if (step === 2) { on(s1); warn(s2); off(s3); }
+        if (step === 3) { on(s1); on(s2); on(s3); }
+      }
+
+      function parseChallenge(header) {
         const params = {};
         const re = /(\w+)="([^"]+)"/g;
         let m;
@@ -65,54 +332,61 @@
         return params;
       }
 
-      async function fetchWeather(proof) {
+      async function requestEndpoint(proof) {
         const headers = {};
         if (proof) {
-          headers['X-Payment-Proof'] = proof;
-          headers['Authorization'] = `x402 ${proof}`;
+          headers["X-Payment-Proof"] = proof;
+          headers["Authorization"] = `x402 ${proof}`;
         }
-        const res = await fetch('/weather', { headers });
+
+        const res = await fetch("/weather", { headers });
         const text = await res.text();
         let body;
         try { body = JSON.parse(text); } catch { body = { raw: text }; }
 
-        lastAuthHeader = res.headers.get('www-authenticate') || '';
-        auth.textContent = lastAuthHeader || '(none)';
-
-        if (res.status === 402 && lastAuthHeader) {
-          const p = parseX402(lastAuthHeader);
-          lastFacilitator = p.facilitator || '';
-          btnPay.disabled = false;
-        }
+        lastAuthHeader = res.headers.get("www-authenticate") || "";
+        auth.textContent = lastAuthHeader || "(none)";
 
         out.textContent = JSON.stringify({ status: res.status, body }, null, 2);
         curlEl.textContent = proof
           ? `curl -i ${location.origin}/weather -H "X-Payment-Proof: ${proof}"`
           : `curl -i ${location.origin}/weather`;
 
+        if (res.status === 402 && lastAuthHeader) {
+          const p = parseChallenge(lastAuthHeader);
+          lastFacilitator = p.facilitator || "";
+          btnAuthorize.disabled = false;
+          setStep(1);
+        }
+
+        if (res.status === 200) {
+          setStep(3);
+        }
+
         return res.status;
       }
 
-      btnFetch.addEventListener('click', async () => {
-        btnPay.disabled = true;
-        currentProof = '';
-        proofEl.textContent = '(none)';
-        await fetchWeather();
+      btnFetch.addEventListener("click", async () => {
+        btnAuthorize.disabled = true;
+        proofEl.textContent = "(none)";
+        setStep(1);
+        await requestEndpoint();
       });
 
-      btnPay.addEventListener('click', async () => {
-        currentProof = `mock_${Date.now()}`;
-        proofEl.textContent = currentProof;
+      btnAuthorize.addEventListener("click", async () => {
+        const proof = `proof_${Date.now()}`;
+        proofEl.textContent = proof;
+        setStep(2);
 
         if (lastFacilitator) {
-          try {
-            const verifyUrl = new URL(lastFacilitator);
-            verifyUrl.searchParams.set('txHash', currentProof);
-            await fetch(verifyUrl.toString());
-          } catch {}
+          await fetch(lastFacilitator, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ txHash: proof }),
+          }).catch(() => undefined);
         }
 
-        await fetchWeather(currentProof);
+        await requestEndpoint(proof);
       });
     </script>
   </body>

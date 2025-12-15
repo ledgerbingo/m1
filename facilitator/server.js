@@ -48,7 +48,7 @@ async function getTxByHash(txHash) {
   return res.json();
 }
 
-function isTxAcceptableForDemo(tx) {
+function isTxAcceptableForAccess(tx) {
   if (!tx || typeof tx !== "object") return { ok: false, reason: "bad_tx" };
 
   if (tx.type === "pending_transaction") {
@@ -102,7 +102,7 @@ app.get("/weather", async (req, res) => {
 
   try {
     const tx = await getTxByHash(proof);
-    const verdict = isTxAcceptableForDemo(tx);
+    const verdict = isTxAcceptableForAccess(tx);
     if (!verdict.ok) {
       res.status(401).json({ error: "Invalid payment proof", reason: verdict.reason });
       return;
@@ -130,7 +130,7 @@ app.post("/verify", async (req, res) => {
 
   try {
     const tx = await getTxByHash(txHash);
-    const verdict = isTxAcceptableForDemo(tx);
+    const verdict = isTxAcceptableForAccess(tx);
     res.json({ ok: verdict.ok, optimistic: !!verdict.optimistic, reason: verdict.reason || null, tx });
   } catch (e) {
     res.status(502).json({ ok: false, error: "verification_failed", detail: e.message });

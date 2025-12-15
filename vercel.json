@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/", "destination": "/index.html" },
     { "source": "/weather", "destination": "/api/weather" },
     { "source": "/verify", "destination": "/api/verify" }
   ]
