@@ -9,15 +9,6 @@ const AGENT_ALGO = `1. Call premium endpoint.
 6. Fetch /receipt for a normalized audit record.
 7. Use /payments for history.`;
 
-export async function getServerSideProps() {
-  return {
-    redirect: {
-      destination: "/developers/examples",
-      permanent: true,
-    },
-  };
-}
-
 export default function ExamplesPage() {
   return (
     <>
@@ -30,7 +21,7 @@ export default function ExamplesPage() {
 
       <div className="wrap">
         <div className="nav">
-          <a className="brand" href="/">
+          <a className="brand" href="/developers">
             <div className="logo" aria-hidden="true"></div>
             <div className="brandTitle">
               <strong>DEO</strong>
@@ -41,10 +32,13 @@ export default function ExamplesPage() {
             <a className="pill" href="/">
               Home
             </a>
-            <a className="pill" href="/standard">
+            <a className="pill" href="/app">
+              App
+            </a>
+            <a className="pill" href="/developers/standard">
               Service Standard
             </a>
-            <a className="pill" href="/examples">
+            <a className="pill" href="/developers/examples">
               Examples
             </a>
             <a className="pill" href="/catalog">
@@ -257,7 +251,7 @@ export default function ExamplesPage() {
         </div>
 
         <div className="footer">
-          Tip: Open <a href="/standard">Service Standard</a> for a live spec view of endpoints and JSON responses.
+          Tip: Open <a href="/developers/standard">Service Standard</a> for a live spec view of endpoints and JSON responses.
         </div>
       </div>
 

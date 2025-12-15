@@ -27,15 +27,6 @@ const IMAGE_PROMPTS = `1) "Bright fintech landing page hero illustration of an a
 
 4) "Three-panel use-case illustration: paid data API, paid inference, paid automation tools, coherent brand palette, minimal vector icons"`;
 
-export async function getServerSideProps() {
-  return {
-    redirect: {
-      destination: "/developers/standard",
-      permanent: true,
-    },
-  };
-}
-
 export default function StandardPage() {
   return (
     <>
@@ -48,7 +39,7 @@ export default function StandardPage() {
 
       <div className="wrap">
         <div className="nav">
-          <a className="brand" href="/">
+          <a className="brand" href="/developers">
             <div className="logo" aria-hidden="true"></div>
             <div className="brandTitle">
               <strong>DEO</strong>
@@ -59,10 +50,13 @@ export default function StandardPage() {
             <a className="pill" href="/">
               Home
             </a>
-            <a className="pill" href="/standard">
+            <a className="pill" href="/app">
+              App
+            </a>
+            <a className="pill" href="/developers/standard">
               Service Standard
             </a>
-            <a className="pill" href="/examples">
+            <a className="pill" href="/developers/examples">
               Examples
             </a>
             <a className="pill" href="/catalog">
@@ -71,7 +65,7 @@ export default function StandardPage() {
             <a className="pill" href="/status">
               Status
             </a>
-            <a className="btn primary" href="/examples#playground">
+            <a className="btn primary" href="/developers/examples#playground">
               Open Playground
             </a>
           </div>
@@ -261,7 +255,7 @@ export default function StandardPage() {
         </div>
 
         <div className="footer">
-          DEO is designed to be composable: the standard endpoints are small, and the premium endpoints remain fully custom.
+          Developer routes live under <a href="/developers">/developers</a>. The consumer wallet lives at <a href="/app">/app</a>.
         </div>
       </div>
 

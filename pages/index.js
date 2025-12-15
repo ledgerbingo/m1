@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Script from "next/script";
 
 export default function HomePage() {
   return (
@@ -7,7 +6,7 @@ export default function HomePage() {
       <Head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>DEO — Autonomous Payments for AI Agents</title>
+        <title>DEO — Everyday Wallet on Movement</title>
         <link rel="stylesheet" href="/site.css" />
       </Head>
 
@@ -17,24 +16,24 @@ export default function HomePage() {
             <div className="logo" aria-hidden="true"></div>
             <div className="brandTitle">
               <strong>DEO</strong>
-              <span>Autonomous payments for agents</span>
+              <span>Everyday wallet</span>
             </div>
           </a>
           <div className="navLinks">
-            <a className="pill" href="/standard">
-              Service Standard
+            <a className="pill" href="/app">
+              App
             </a>
-            <a className="pill" href="/examples">
-              Examples
+            <a className="pill" href="/security">
+              Security
             </a>
-            <a className="pill" href="/catalog">
-              Catalog
+            <a className="pill" href="/support">
+              Support
             </a>
-            <a className="pill" href="/status">
-              Status
+            <a className="pill" href="/developers">
+              Developers
             </a>
-            <a className="btn primary" href="/examples#playground">
-              Open Playground
+            <a className="btn primary" href="/app">
+              Open App
             </a>
           </div>
         </div>
@@ -42,18 +41,18 @@ export default function HomePage() {
         <div className="hero">
           <div className="card">
             <div className="sectionTitle">DEO</div>
-            <div className="h1">Paid endpoints that feel instant for agents.</div>
+            <div className="h1">A modern wallet for everyday payments.</div>
             <p className="lead">
-              DEO standardizes a simple handshake for pay-per-call APIs: the server issues an HTTP 402 challenge, the
-              client produces an on-chain proof, and the request is retried with verifiable authorization.
+              Send and receive with Web2 simplicity. You keep your keys. Movement L1 handles settlement and receipts
+              under the hood.
             </p>
 
             <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a className="btn primary" href="/standard">
-                Read the standard
+              <a className="btn primary" href="/app">
+                Open wallet
               </a>
-              <a className="btn" href="/examples#playground">
-                Try the playground
+              <a className="btn" href="/security">
+                How security works
               </a>
             </div>
 
@@ -61,10 +60,10 @@ export default function HomePage() {
               className="section"
               style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}
             >
-              <div className="pill">HTTP 402 challenge</div>
-              <div className="pill">Movement settlement proof</div>
-              <div className="pill">Fast or final verification</div>
-              <div className="pill">Receipts + history</div>
+              <div className="pill">Non-custodial</div>
+              <div className="pill">Send &amp; receive</div>
+              <div className="pill">Activity &amp; receipts</div>
+              <div className="pill">Built on Movement</div>
             </div>
           </div>
 
@@ -72,141 +71,112 @@ export default function HomePage() {
             <img
               className="heroArt"
               src="/assets/deo-hero.svg"
-              alt="DEO illustration showing agent, service, and Movement settlement"
+              alt="DEO illustration"
             />
           </div>
         </div>
 
         <div className="section">
-          <div className="sectionTitle">DEO in 30 seconds</div>
+          <div className="sectionTitle">What you can do</div>
           <div className="grid3">
             <div className="card">
-              <div className="k">1) Challenge</div>
+              <div className="k">Send</div>
               <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-                Premium endpoints respond with <span className="k">402 Payment Required</span> and a machine-readable{" "}
-                <span className="k">WWW-Authenticate</span> header that describes price, token, and verifier.
+                Transfer MOVE to any address in seconds using your own wallet.
               </div>
             </div>
             <div className="card">
-              <div className="k">2) Proof</div>
+              <div className="k">Receive</div>
               <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-                The client submits an on-chain payment (or authorization action) and uses the resulting transaction hash
-                as a proof.
+                Share your address to receive payments. No account sign-up.
               </div>
             </div>
             <div className="card">
-              <div className="k">3) Unlock</div>
+              <div className="k">Track activity</div>
               <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-                Retry the original request with <span className="k">X-Payment-Proof</span>. The service verifies and
-                returns the premium response immediately, plus receipts and history endpoints for auditing.
+                See transfers and on-chain details in a friendly activity feed.
               </div>
             </div>
           </div>
         </div>
 
         <div className="section">
-          <div className="sectionTitle">Flow</div>
-          <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-            <img className="heroArt" src="/assets/deo-flow.svg" alt="HTTP 402 to proof to unlock diagram" />
+          <div className="sectionTitle">Designed for trust</div>
+          <div className="grid3">
+            <div className="card">
+              <div className="k">Non-custodial</div>
+              <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
+                Your private keys stay in your wallet. DEO never takes custody of funds.
+              </div>
+            </div>
+            <div className="card">
+              <div className="k">On-chain receipts</div>
+              <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
+                Transactions settle on Movement L1. Activity is verifiable and auditable.
+              </div>
+            </div>
+            <div className="card">
+              <div className="k">Simple by default</div>
+              <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
+                Web3 complexity is kept out of the way, with transparency available when you need it.
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="section">
-          <div className="sectionTitle">Live service snapshot</div>
+          <div className="sectionTitle">Get started</div>
           <div className="grid2">
             <div className="card">
-              <div className="k">GET /status</div>
-              <pre style={{ marginTop: 10 }}>
-                <code id="statusOut">(loading...)</code>
-              </pre>
-              <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <a className="btn" href="/status">
-                  Open JSON
-                </a>
-                <a className="btn" href="/standard#live">
-                  See on the Standard page
-                </a>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="k">GET /catalog</div>
-              <pre style={{ marginTop: 10 }}>
-                <code id="catalogOut">(loading...)</code>
-              </pre>
-              <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <a className="btn" href="/catalog">
-                  Open JSON
-                </a>
-                <a className="btn" href="/examples#recipes">
-                  Copy CLI recipes
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="section">
-          <div className="sectionTitle">Start with curl</div>
-          <div className="grid2">
-            <div className="card">
-              <div className="k">Call a paid endpoint (expect 402)</div>
-              <pre style={{ marginTop: 10 }}>
-                <code id="curlPaid">(loading...)</code>
-              </pre>
+              <div className="k">Open the wallet</div>
               <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-                The 402 response includes a challenge header that tells clients what proof is required.
-              </div>
-            </div>
-            <div className="card">
-              <div className="k">Retry with a proof</div>
-              <pre style={{ marginTop: 10 }}>
-                <code id="curlRetry">(loading...)</code>
-              </pre>
-              <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-                After payment, provide the tx hash via <span className="k">X-Payment-Proof</span>. Use{" "}
-                <span className="k">/receipt</span> for a normalized audit record.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="section">
-          <div className="sectionTitle">Where to go next</div>
-          <div className="grid2">
-            <div className="card">
-              <div className="k">Service Standard</div>
-              <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-                The generalized DEO specification with live outputs from <span className="k">/status</span> and{" "}
-                <span className="k">/catalog</span>.
+                Connect a wallet extension and start sending or receiving immediately.
               </div>
               <div className="section">
-                <a className="btn primary" href="/standard">
-                  Open Service Standard
+                <a className="btn primary" href="/app">
+                  Go to /app
                 </a>
               </div>
             </div>
             <div className="card">
-              <div className="k">Examples &amp; Playground</div>
+              <div className="k">Learn the basics</div>
               <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-                Run the request → 402 → proof → retry flow. Inspect receipts and payment history.
+                Read about non-custodial safety and common wallet best practices.
               </div>
               <div className="section">
-                <a className="btn primary" href="/examples#playground">
-                  Open Playground
+                <a className="btn" href="/security">
+                  Security
+                </a>
+                <a className="btn" href="/support">
+                  Support
                 </a>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="section">
+          <div className="sectionTitle">For developers</div>
+          <div className="card">
+            <div className="k">Integrate DEO into products and services</div>
+            <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
+              Developer documentation and the protocol playground live under <span className="k">/developers</span>.
+            </div>
+            <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <a className="btn primary" href="/developers">
+                Open developer docs
+              </a>
+              <a className="btn" href="/developers/examples#playground">
+                Playground
+              </a>
             </div>
           </div>
         </div>
 
         <div className="footer">
-          DEO is designed for composability: premium endpoints remain custom, while pricing discovery and verification are
-          standardized.
+          DEO is non-custodial. Always verify addresses before sending. Transactions are final once submitted on-chain.
         </div>
       </div>
-
-      <Script src="/js/landing.js" strategy="afterInteractive" />
     </>
   );
 }
