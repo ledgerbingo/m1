@@ -1,4 +1,4 @@
-const legacyHandler = require("../../api/verify");
+const legacyHandler = require("../../server/legacy-api/verify");
 
 export const config = {
   api: {

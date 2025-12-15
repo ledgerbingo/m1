@@ -1,4 +1,4 @@
-const legacyHandler = require("../../api/receipt");
+const legacyHandler = require("../../server/legacy-api/receipt");
 
 export const config = {
   api: {
