@@ -51,19 +51,49 @@ async function getTxByHash(fullnodeUrl, txHash) {
   return res.json();
 }
 
-function isTxAcceptableForAccess(tx, { expectedFunction, merchantAddress, priceAmount }) {
+function normalize(v) {
+  return String(v || "").toLowerCase();
+}
+
+function typeTagMatches(expected, actual) {
+  const exp = normalize(expected);
+  const act = normalize(actual);
+  if (!exp || !act) return false;
+  if (exp === act) return true;
+
+  if (!exp.startsWith("0x")) {
+    const expSuffix = exp.split("::").slice(-2).join("::");
+    const actSuffix = act.split("::").slice(-2).join("::");
+    return expSuffix === actSuffix;
+  }
+
+  return false;
+}
+
+function parseRecipientAmount(payload) {
+  const args = payload?.arguments || [];
+  return {
+    recipient: String(args[0] || ""),
+    amount: String(args[1] || ""),
+  };
+}
+
+function isTxAcceptableForAccess(
+  tx,
+  { expectedPayFunction, merchantAddress, priceAmount, tokenType, allowAptTransfer }
+) {
   if (!tx || typeof tx !== "object") return { ok: false, reason: "bad_tx" };
 
-  if (tx.type === "pending_transaction") {
-    return { ok: true, optimistic: true };
-  }
+  const optimistic = tx.type === "pending_transaction";
 
-  if (tx.type !== "user_transaction") {
-    return { ok: false, reason: `unexpected_type:${tx.type}` };
-  }
+  if (!optimistic) {
+    if (tx.type !== "user_transaction") {
+      return { ok: false, reason: `unexpected_type:${tx.type}` };
+    }
 
-  if (tx.success !== true) {
-    return { ok: false, reason: "tx_failed" };
+    if (tx.success !== true) {
+      return { ok: false, reason: "tx_failed" };
+    }
   }
 
   const payload = tx.payload;
@@ -71,22 +101,34 @@ function isTxAcceptableForAccess(tx, { expectedFunction, merchantAddress, priceA
     return { ok: false, reason: "not_entry_function" };
   }
 
-  if (payload.function !== expectedFunction) {
-    return { ok: false, reason: `wrong_function:${payload.function}` };
+  const fn = payload.function;
+
+  if (fn === expectedPayFunction) {
+    const { recipient, amount } = parseRecipientAmount(payload);
+    if (normalize(recipient) !== normalize(merchantAddress)) return { ok: false, reason: "wrong_merchant" };
+    if (String(amount) !== String(priceAmount)) return { ok: false, reason: "wrong_amount" };
+    return { ok: true, optimistic };
   }
 
-  const args = payload.arguments || [];
-  const merchant = (args[0] || "").toLowerCase();
-  const amount = String(args[1] || "");
+  if (fn === "0x1::coin::transfer") {
+    const type0 = payload.type_arguments?.[0];
+    if (!type0) return { ok: false, reason: "missing_token" };
+    if (!typeTagMatches(tokenType, type0)) return { ok: false, reason: "wrong_token" };
 
-  if (merchant !== merchantAddress.toLowerCase()) {
-    return { ok: false, reason: "wrong_merchant" };
-  }
-  if (amount !== String(priceAmount)) {
-    return { ok: false, reason: "wrong_amount" };
+    const { recipient, amount } = parseRecipientAmount(payload);
+    if (normalize(recipient) !== normalize(merchantAddress)) return { ok: false, reason: "wrong_merchant" };
+    if (String(amount) !== String(priceAmount)) return { ok: false, reason: "wrong_amount" };
+    return { ok: true, optimistic };
   }
 
-  return { ok: true, optimistic: false };
+  if (allowAptTransfer && fn === "0x1::aptos_account::transfer") {
+    const { recipient, amount } = parseRecipientAmount(payload);
+    if (normalize(recipient) !== normalize(merchantAddress)) return { ok: false, reason: "wrong_merchant" };
+    if (String(amount) !== String(priceAmount)) return { ok: false, reason: "wrong_amount" };
+    return { ok: true, optimistic };
+  }
+
+  return { ok: false, reason: "unsupported_function" };
 }
 
 function getPreviewWeather() {
@@ -126,6 +168,7 @@ module.exports = async (req, res) => {
   const MERCHANT_ADDRESS = process.env.MERCHANT_ADDRESS || "0xMERCHANT";
 
   const SERVICE_MODE = (process.env.SERVICE_MODE || "preview").toLowerCase();
+  const ALLOW_APT_TRANSFER = String(process.env.ALLOW_APT_TRANSFER || "").toLowerCase() === "true";
 
   const proof = getProof(req);
   if (!proof) {
@@ -166,9 +209,11 @@ module.exports = async (req, res) => {
   try {
     const tx = await getTxByHash(FULLNODE_URL, proof);
     const verdict = isTxAcceptableForAccess(tx, {
-      expectedFunction: EXPECTED_FUNCTION,
+      expectedPayFunction: EXPECTED_FUNCTION,
       merchantAddress: MERCHANT_ADDRESS,
       priceAmount: PRICE_AMOUNT,
+      tokenType: USDC_TOKEN,
+      allowAptTransfer: ALLOW_APT_TRANSFER,
     });
 
     if (!verdict.ok) {
@@ -178,6 +223,7 @@ module.exports = async (req, res) => {
         JSON.stringify({
           error: "proof_invalid",
           message: "The proof did not match the required authorization.",
+          reason: verdict.reason,
         })
       );
       return;

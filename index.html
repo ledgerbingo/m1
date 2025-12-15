@@ -98,6 +98,9 @@
       .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
       @media (max-width: 920px) { .grid2 { grid-template-columns: 1fr; } }
 
+      .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+      @media (max-width: 920px) { .grid3 { grid-template-columns: 1fr; } }
+
       .h {
         margin: 0 0 10px;
         font-size: 14px;
@@ -251,6 +254,24 @@
         </div>
       </div>
 
+      <div class="grid2" style="margin-top: 16px;">
+        <div class="card">
+          <div class="h">Status</div>
+          <pre><code id="statusOut">(loading...)</code></pre>
+
+          <div style="margin-top: 14px;" class="muted">Command line</div>
+          <pre style="margin-top: 8px;"><code id="curlStatus">curl -s ${location.origin}/status</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="h">Catalog</div>
+          <pre><code id="catalogOut">(loading...)</code></pre>
+
+          <div style="margin-top: 14px;" class="muted">Command line</div>
+          <pre style="margin-top: 8px;"><code id="curlCatalog">curl -s ${location.origin}/catalog</code></pre>
+        </div>
+      </div>
+
       <div class="grid2">
         <div class="card">
           <div class="h">Try it</div>
@@ -276,6 +297,24 @@
 
           <div style="margin-top: 14px;" class="muted">Command line</div>
           <pre style="margin-top: 8px;"><code id="curl">curl -i ${location.origin}/weather</code></pre>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top: 16px;">
+        <div class="card">
+          <div class="h">Receipt</div>
+          <pre><code id="receiptOut">Authorize a request to generate a receipt.</code></pre>
+
+          <div style="margin-top: 14px;" class="muted">Command line</div>
+          <pre style="margin-top: 8px;"><code id="curlReceipt">curl -s ${location.origin}/receipt?txHash=&lt;proof&gt;</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="h">Payments</div>
+          <pre><code id="paymentsOut">Authorize a request to fetch payment history.</code></pre>
+
+          <div style="margin-top: 14px;" class="muted">Command line</div>
+          <pre style="margin-top: 8px;"><code id="curlPayments">curl -s ${location.origin}/payments</code></pre>
         </div>
       </div>
 
@@ -307,6 +346,14 @@
       const btnAuthorize = document.getElementById("btnAuthorize");
       const proofEl = document.getElementById("proof");
       const curlEl = document.getElementById("curl");
+      const statusOut = document.getElementById("statusOut");
+      const catalogOut = document.getElementById("catalogOut");
+      const receiptOut = document.getElementById("receiptOut");
+      const paymentsOut = document.getElementById("paymentsOut");
+      const curlStatus = document.getElementById("curlStatus");
+      const curlCatalog = document.getElementById("curlCatalog");
+      const curlReceipt = document.getElementById("curlReceipt");
+      const curlPayments = document.getElementById("curlPayments");
       const s1 = document.getElementById("s1");
       const s2 = document.getElementById("s2");
       const s3 = document.getElementById("s3");
@@ -330,6 +377,44 @@
         let m;
         while ((m = re.exec(header)) !== null) params[m[1]] = m[2];
         return params;
+      }
+
+      async function fetchJsonSafe(path) {
+        const res = await fetch(path);
+        const text = await res.text();
+        let body;
+        try { body = JSON.parse(text); } catch { body = { raw: text }; }
+        return { status: res.status, body };
+      }
+
+      async function loadStatusAndCatalog() {
+        const base = location.origin;
+        curlStatus.textContent = `curl -s ${base}/status`;
+        curlCatalog.textContent = `curl -s ${base}/catalog`;
+        curlReceipt.textContent = `curl -s ${base}/receipt?txHash=<proof>`;
+        curlPayments.textContent = `curl -s ${base}/payments`;
+
+        const [st, cat] = await Promise.all([
+          fetchJsonSafe("/status").catch(() => ({ status: 0, body: { error: "unavailable" } })),
+          fetchJsonSafe("/catalog").catch(() => ({ status: 0, body: { error: "unavailable" } })),
+        ]);
+
+        statusOut.textContent = JSON.stringify(st.body, null, 2);
+        catalogOut.textContent = JSON.stringify(cat.body, null, 2);
+      }
+
+      async function loadReceiptAndPayments(proof) {
+        const receipt = await fetchJsonSafe(`/receipt?txHash=${encodeURIComponent(proof)}`).catch(() => ({ status: 0, body: { error: "unavailable" } }));
+        receiptOut.textContent = JSON.stringify(receipt.body, null, 2);
+
+        const payer = receipt?.body?.receipt?.payer;
+        const paymentsPath = payer ? `/payments?payer=${encodeURIComponent(payer)}` : "/payments";
+        const payments = await fetchJsonSafe(paymentsPath).catch(() => ({ status: 0, body: { error: "unavailable" } }));
+        paymentsOut.textContent = JSON.stringify(payments.body, null, 2);
+
+        if (payer) {
+          curlPayments.textContent = `curl -s ${location.origin}/payments?payer=${payer}`;
+        }
       }
 
       async function requestEndpoint(proof) {
@@ -369,6 +454,8 @@
       btnFetch.addEventListener("click", async () => {
         btnAuthorize.disabled = true;
         proofEl.textContent = "(none)";
+        receiptOut.textContent = "Authorize a request to generate a receipt.";
+        paymentsOut.textContent = "Authorize a request to fetch payment history.";
         setStep(1);
         await requestEndpoint();
       });
@@ -387,7 +474,10 @@
         }
 
         await requestEndpoint(proof);
+        await loadReceiptAndPayments(proof);
       });
+
+      loadStatusAndCatalog().catch(() => undefined);
     </script>
   </body>
 </html>
