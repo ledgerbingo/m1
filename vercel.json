@@ -1,4 +1,5 @@
 {
+  "framework": "nextjs",
   "rewrites": [
     { "source": "/status", "destination": "/api/status" },
     { "source": "/catalog", "destination": "/api/catalog" },
