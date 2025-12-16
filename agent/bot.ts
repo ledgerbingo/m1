@@ -1,4 +1,10 @@
-import { AptosAccount, AptosClient, HexString, TxnBuilderTypes, BCS } from "aptos";
+import {
+  AptosAccount as MovementAccount,
+  AptosClient as MovementClient,
+  HexString,
+  TxnBuilderTypes,
+  BCS,
+} from "movement-sdk";
 
 const API_URL = process.env.API_URL || "http://localhost:3000/weather";
 const FULLNODE_URL = process.env.FULLNODE_URL || "http://127.0.0.1:8080/v1";
@@ -35,10 +41,15 @@ async function fetchWeather(proof?: string) {
   return res;
 }
 
-async function submitPayMerchantTx(client: AptosClient, account: AptosAccount, merchant: string, amount: string) {
+async function submitPayMerchantTx(
+  client: MovementClient,
+  account: MovementAccount,
+  merchant: string,
+  amount: string
+) {
   const entryFunction = new TxnBuilderTypes.EntryFunction(
     TxnBuilderTypes.ModuleId.fromStr(`${DEO_PACKAGE_ADDRESS}::treasury`),
-    "pay_merchant",
+    new TxnBuilderTypes.Identifier("pay_merchant"),
     [],
     [
       BCS.bcsToBytes(TxnBuilderTypes.AccountAddress.fromHex(merchant)),
@@ -48,19 +59,19 @@ async function submitPayMerchantTx(client: AptosClient, account: AptosAccount, m
 
   const payload = new TxnBuilderTypes.TransactionPayloadEntryFunction(entryFunction);
   const rawTxn = await client.generateRawTransaction(account.address(), payload, {
-    max_gas_amount: "2000",
-    gas_unit_price: "100",
+    maxGasAmount: 2000n,
+    gasUnitPrice: 100n,
   });
 
-  const bcsTxn = AptosClient.generateBCSTransaction(account, rawTxn);
+  const bcsTxn = MovementClient.generateBCSTransaction(account, rawTxn);
   const pending = await client.submitSignedBCSTransaction(bcsTxn);
   return pending.hash as string;
 }
 
 async function main() {
-  const client = new AptosClient(FULLNODE_URL);
+  const client = new MovementClient(FULLNODE_URL);
   const account = PRIVATE_KEY_HEX
-    ? new AptosAccount(new HexString(PRIVATE_KEY_HEX).toUint8Array())
+    ? new MovementAccount(new HexString(PRIVATE_KEY_HEX).toUint8Array())
     : null;
 
   if (account) {

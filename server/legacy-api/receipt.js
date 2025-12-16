@@ -94,7 +94,6 @@ function buildReceiptFromTx(tx, {
   merchantAddress,
   priceAmount,
   tokenType,
-  allowAptTransfer,
 }) {
   if (!tx || typeof tx !== "object") return { ok: false, reason: "bad_tx" };
 
@@ -141,23 +140,6 @@ function buildReceiptFromTx(tx, {
         merchant: recipient,
         amount,
         token: type0,
-      };
-    }
-
-    if (allowAptTransfer && fn === "0x1::aptos_account::transfer") {
-      const { recipient, amount } = parseRecipientAmount(payload);
-      if (normalize(recipient) !== normalize(merchantAddress)) return { ok: false, reason: "wrong_merchant" };
-      if (String(amount) !== String(priceAmount)) return { ok: false, reason: "wrong_amount" };
-
-      return {
-        ok: true,
-        settlement: "fast",
-        payer: tx.sender || null,
-        txHash: tx.hash || null,
-        function: fn,
-        merchant: recipient,
-        amount,
-        token: "0x1::aptos_coin::AptosCoin",
       };
     }
 
@@ -217,23 +199,6 @@ function buildReceiptFromTx(tx, {
     };
   }
 
-  if (allowAptTransfer && fn === "0x1::aptos_account::transfer") {
-    const { recipient, amount } = parseRecipientAmount(payload);
-    if (normalize(recipient) !== normalize(merchantAddress)) return { ok: false, reason: "wrong_merchant" };
-    if (String(amount) !== String(priceAmount)) return { ok: false, reason: "wrong_amount" };
-
-    return {
-      ok: true,
-      settlement: "final",
-      payer: tx.sender || null,
-      txHash: tx.hash || null,
-      function: fn,
-      merchant: recipient,
-      amount,
-      token: "0x1::aptos_coin::AptosCoin",
-    };
-  }
-
   return { ok: false, reason: "unsupported_function" };
 }
 
@@ -276,7 +241,6 @@ module.exports = async (req, res) => {
   const MERCHANT_ADDRESS = process.env.MERCHANT_ADDRESS || "0xMERCHANT";
 
   const SERVICE_MODE = (process.env.SERVICE_MODE || "preview").toLowerCase();
-  const ALLOW_APT_TRANSFER = String(process.env.ALLOW_APT_TRANSFER || "").toLowerCase() === "true";
 
   const proof = getProof(req, body);
   if (!proof) {
@@ -316,7 +280,6 @@ module.exports = async (req, res) => {
       merchantAddress: MERCHANT_ADDRESS,
       priceAmount: PRICE_AMOUNT,
       tokenType: TOKEN_TYPE,
-      allowAptTransfer: ALLOW_APT_TRANSFER,
     });
 
     const includeTx = (() => {

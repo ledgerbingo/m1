@@ -1,9 +1,9 @@
 module deo::treasury {
     use std::signer;
     use std::vector;
-    use aptos_framework::coin;
-    use aptos_framework::event;
-    use aptos_framework::timestamp;
+    use movement_framework::coin;
+    use movement_framework::event;
+    use movement_framework::timestamp;
 
     use deo::usdc;
     use meridian::staking;
@@ -158,7 +158,7 @@ module deo::treasury {
 
 module deo::usdc {
     use std::signer;
-    use aptos_framework::managed_coin;
+    use movement_framework::managed_coin;
 
     struct USDC has store, drop {}
 

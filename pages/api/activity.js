@@ -80,6 +80,30 @@ async function getResource({ fullnodeUrl, account, resourceType }) {
   return res.json();
 }
 
+async function discoverNativeMoveCoinType({ fullnodeUrl }) {
+  const base = String(fullnodeUrl).replace(/\/$/, "");
+  const url = new URL(`${base}/accounts/0x1/resources`);
+
+  const res = await fetch(url.toString());
+  if (!res.ok) return null;
+
+  const resources = await res.json().catch(() => null);
+  if (!Array.isArray(resources)) return null;
+
+  for (const r of resources) {
+    const t = r?.type != null ? String(r.type) : "";
+    if (!t.startsWith("0x1::coin::CoinInfo<")) continue;
+    const sym = r?.data?.symbol != null ? String(r.data.symbol) : "";
+    if (sym.toUpperCase() !== "MOVE") continue;
+    const lt = t.indexOf("<");
+    const gt = t.lastIndexOf(">");
+    if (lt < 0 || gt < 0 || gt <= lt + 1) continue;
+    return t.slice(lt + 1, gt);
+  }
+
+  return null;
+}
+
 async function getEvents({ fullnodeUrl, account, eventHandleStruct, field, start, limit }) {
   const base = String(fullnodeUrl).replace(/\/$/, "");
   const struct = encodeURIComponent(eventHandleStruct);
@@ -141,7 +165,6 @@ function enrichCounterparty(tx, direction) {
   if (direction === "sent") {
     const fn = payload?.function ? String(payload.function) : "";
     const args = Array.isArray(payload?.arguments) ? payload.arguments : [];
-    if (fn.endsWith("0x1::aptos_account::transfer") && args[0]) return String(args[0]);
     if (fn.endsWith("0x1::coin::transfer") && args[0]) return String(args[0]);
   }
 
@@ -191,10 +214,18 @@ export default async function handler(req, res) {
     return;
   }
 
-  const coinType = process.env.NATIVE_COIN_TYPE || "0x1::aptos_coin::AptosCoin";
-  const coinStoreType = `0x1::coin::CoinStore<${coinType}>`;
-
   try {
+    const coinType =
+      process.env.NATIVE_COIN_TYPE || (await discoverNativeMoveCoinType({ fullnodeUrl: FULLNODE_URL }));
+
+    if (!coinType) {
+      res.statusCode = 502;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ ok: false, error: "native_coin_unavailable" }));
+      return;
+    }
+
+    const coinStoreType = `0x1::coin::CoinStore<${coinType}>`;
     const coinStore = await getResource({ fullnodeUrl: FULLNODE_URL, account: address, resourceType: coinStoreType });
 
     const depositCounter = coinStore?.data?.deposit_events?.counter || "0";

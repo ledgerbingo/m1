@@ -10,7 +10,7 @@ function shortAddr(addr) {
 function getWalletProvider() {
   if (typeof window === "undefined") return null;
   const w = window;
-  return w.aptos || w.martian || null;
+  return w.razor || w.nightly || null;
 }
 
 async function fetchJsonSafe(path) {
@@ -23,6 +23,31 @@ async function fetchJsonSafe(path) {
     body = { raw: text };
   }
   return { ok: res.ok, status: res.status, body };
+}
+
+async function discoverNativeMoveCoinType(fullnodeUrl) {
+  const base = String(fullnodeUrl || "").replace(/\/$/, "");
+  if (!base) return null;
+
+  const url = new URL(`${base}/accounts/0x1/resources`);
+  const res = await fetch(url.toString());
+  if (!res.ok) return null;
+
+  const resources = await res.json().catch(() => null);
+  if (!Array.isArray(resources)) return null;
+
+  for (const r of resources) {
+    const t = r?.type != null ? String(r.type) : "";
+    if (!t.startsWith("0x1::coin::CoinInfo<")) continue;
+    const sym = r?.data?.symbol != null ? String(r.data.symbol) : "";
+    if (sym.toUpperCase() !== "MOVE") continue;
+    const lt = t.indexOf("<");
+    const gt = t.lastIndexOf(">");
+    if (lt < 0 || gt < 0 || gt <= lt + 1) continue;
+    return t.slice(lt + 1, gt);
+  }
+
+  return null;
 }
 
 function formatMoveAmount(octas) {
@@ -54,6 +79,7 @@ export default function AppPage() {
   const [activityBusy, setActivityBusy] = useState(false);
   const [balanceBusy, setBalanceBusy] = useState(false);
   const [balanceValue, setBalanceValue] = useState(null);
+  const [nativeCoinType, setNativeCoinType] = useState("");
 
   const chainLabel = useMemo(() => {
     const id = status?.chain?.chain_id;
@@ -94,6 +120,8 @@ export default function AppPage() {
       const q = `?address=${encodeURIComponent(addr)}`;
       const r = await fetchJsonSafe(`/api/balance${q}`);
       const v = r?.body?.value != null ? String(r.body.value) : null;
+      const ct = r?.body?.coin_type != null ? String(r.body.coin_type) : "";
+      if (ct && ct.includes("::")) setNativeCoinType(ct);
       setBalanceValue(v);
     } catch {
       setBalanceValue(null);
@@ -111,7 +139,7 @@ export default function AppPage() {
     setMessage("");
     const wallet = getWalletProvider();
     if (!wallet) {
-      setMessage("No wallet detected. Install a Movement/Aptos wallet extension.");
+      setMessage("No wallet detected. Install a Movement wallet extension (Razor or Nightly).");
       return;
     }
 
@@ -182,12 +210,33 @@ export default function AppPage() {
       return;
     }
 
+    let coinType = nativeCoinType;
+    if (!coinType) {
+      const fullnodeUrl = status?.chain?.fullnode_url;
+      if (fullnodeUrl) {
+        try {
+          const discovered = await discoverNativeMoveCoinType(fullnodeUrl);
+          if (discovered) {
+            coinType = discovered;
+            setNativeCoinType(discovered);
+          }
+        } catch {
+          coinType = "";
+        }
+      }
+    }
+
+    if (!coinType) {
+      setMessage("Unable to resolve native MOVE coin type.");
+      return;
+    }
+
     setSendBusy(true);
     try {
       const tx = {
         type: "entry_function_payload",
-        function: "0x1::aptos_account::transfer",
-        type_arguments: [],
+        function: "0x1::coin::transfer",
+        type_arguments: [coinType],
         arguments: [to, String(octas)],
       };
 
@@ -336,7 +385,7 @@ export default function AppPage() {
               </button>
 
               <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-                Amounts are submitted using the wallet’s native transfer function.
+                Amounts are submitted as on-chain MOVE transfers.
               </div>
             </div>
 

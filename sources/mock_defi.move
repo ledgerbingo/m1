@@ -1,5 +1,5 @@
 module meridian::staking {
-    use aptos_framework::coin;
+    use movement_framework::coin;
 
     public struct StakeReceipt<CoinType> has store (
         coin::Coin<CoinType>
@@ -16,7 +16,7 @@ module meridian::staking {
 }
 
 module echelon::lending {
-    use aptos_framework::coin;
+    use movement_framework::coin;
 
     public struct LendReceipt<CoinType> has store (
         coin::Coin<CoinType>

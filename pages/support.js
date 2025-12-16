@@ -89,7 +89,7 @@ export default function SupportPage() {
             <div className="card">
               <div className="k">What wallet should I use?</div>
               <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-                Use a reputable Movement/Aptos wallet extension. Keep it updated and never share recovery phrases.
+                Use a reputable Movement wallet extension (for example Razor or Nightly). Keep it updated and never share recovery phrases.
               </div>
             </div>
             <div className="card">

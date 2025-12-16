@@ -57,7 +57,7 @@ function parseRecipientAmount(payload) {
 
 function isTxAcceptableForAccess(
   tx,
-  { expectedPayFunction, merchantAddress, priceAmount, tokenType, allowAptTransfer }
+  { expectedPayFunction, merchantAddress, priceAmount, tokenType }
 ) {
   if (!tx || typeof tx !== "object") return { ok: false, reason: "bad_tx" };
 
@@ -92,13 +92,6 @@ function isTxAcceptableForAccess(
     if (!type0) return { ok: false, reason: "missing_token" };
     if (!typeTagMatches(tokenType, type0)) return { ok: false, reason: "wrong_token" };
 
-    const { recipient, amount } = parseRecipientAmount(payload);
-    if (normalize(recipient) !== normalize(merchantAddress)) return { ok: false, reason: "wrong_merchant" };
-    if (String(amount) !== String(priceAmount)) return { ok: false, reason: "wrong_amount" };
-    return { ok: true, optimistic };
-  }
-
-  if (allowAptTransfer && fn === "0x1::aptos_account::transfer") {
     const { recipient, amount } = parseRecipientAmount(payload);
     if (normalize(recipient) !== normalize(merchantAddress)) return { ok: false, reason: "wrong_merchant" };
     if (String(amount) !== String(priceAmount)) return { ok: false, reason: "wrong_amount" };
@@ -141,7 +134,6 @@ module.exports = async (req, res) => {
   const PRICE_AMOUNT = process.env.PRICE_AMOUNT || "1000";
 
   const TOKEN_TYPE = process.env.USDC_TOKEN || "deo::usdc::USDC";
-  const ALLOW_APT_TRANSFER = String(process.env.ALLOW_APT_TRANSFER || "").toLowerCase() === "true";
 
   const DEO_PACKAGE_ADDRESS = process.env.DEO_PACKAGE_ADDRESS || "0xDEO";
   const EXPECTED_FUNCTION = `${DEO_PACKAGE_ADDRESS}::treasury::pay_merchant`;
@@ -191,7 +183,6 @@ module.exports = async (req, res) => {
       merchantAddress: MERCHANT_ADDRESS,
       priceAmount: PRICE_AMOUNT,
       tokenType: TOKEN_TYPE,
-      allowAptTransfer: ALLOW_APT_TRANSFER,
     });
 
     res.statusCode = 200;
