@@ -38,34 +38,36 @@ export default function SupportPage() {
           </div>
         </div>
 
-        <div className="hero">
-          <div className="card">
-            <div className="sectionTitle">Support</div>
-            <div className="h1">Help when you need it.</div>
-            <p className="lead">
-              DEO is non-custodial. You control your wallet, and transactions are final once submitted on-chain.
-            </p>
+        <div className="heroBand">
+          <div className="heroBandGrid">
+            <div>
+              <div className="sectionTitle">Support</div>
+              <div className="h1">Help when you need it.</div>
+              <p className="lead">
+                DEO is non-custodial. You control your wallet, and transactions are final once submitted on-chain.
+              </p>
 
-            <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a className="btn primary" href="#faq">
-                FAQ
-              </a>
-              <a className="btn" href="/security">
-                Security basics
-              </a>
-              <a className="btn" href="/developers">
-                Developer docs
-              </a>
+              <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <a className="btn primary" href="#faq">
+                  FAQ
+                </a>
+                <a className="btn" href="/security">
+                  Security basics
+                </a>
+                <a className="btn" href="/developers">
+                  Developer docs
+                </a>
+              </div>
             </div>
-          </div>
 
-          <div className="card">
-            <div className="sectionTitle">Contact</div>
-            <div className="muted" style={{ lineHeight: 1.7 }}>
-              If you’re integrating DEO into a product or need help debugging an endpoint, use the developer pages.
-              <br />
-              <br />
-              For consumer support, add your preferred contact method here (email, chat, or helpdesk).
+            <div className="card">
+              <div className="sectionTitle">Contact</div>
+              <div className="muted" style={{ lineHeight: 1.7 }}>
+                If you’re integrating DEO into a product or need help debugging an endpoint, use the developer pages.
+                <br />
+                <br />
+                For consumer support, add your preferred contact method here (email, chat, or helpdesk).
+              </div>
             </div>
           </div>
         </div>

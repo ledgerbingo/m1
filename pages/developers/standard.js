@@ -71,38 +71,40 @@ export default function StandardPage() {
           </div>
         </div>
 
-        <div className="hero">
-          <div className="card">
-            <div className="sectionTitle">Service Standard</div>
-            <div className="h1">A minimal, reusable payment handshake for HTTP.</div>
-            <p className="lead">
-              DEO defines a small set of endpoints that let any client discover pricing, receive an HTTP 402 challenge,
-              produce an on-chain proof, and retry the original request with a verifiable authorization. The goal is a
-              consistent integration surface that works for agents and traditional SDKs.
-            </p>
+        <div className="heroBand">
+          <div className="heroBandGrid">
+            <div>
+              <div className="sectionTitle">Service Standard</div>
+              <div className="h1">A minimal, reusable payment handshake for HTTP.</div>
+              <p className="lead">
+                DEO defines a small set of endpoints that let any client discover pricing, receive an HTTP 402 challenge,
+                produce an on-chain proof, and retry the original request with a verifiable authorization. The goal is a
+                consistent integration surface that works for agents and traditional SDKs.
+              </p>
 
-            <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a className="btn primary" href="#endpoints">
-                Standard endpoints
-              </a>
-              <a className="btn" href="#handshake">
-                402 handshake
-              </a>
-              <a className="btn" href="#live">
-                Live service output
-              </a>
+              <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <a className="btn primary" href="#endpoints">
+                  Standard endpoints
+                </a>
+                <a className="btn" href="#handshake">
+                  402 handshake
+                </a>
+                <a className="btn" href="#live">
+                  Live service output
+                </a>
+              </div>
+
+              <div className="section" style={{ marginTop: 10 }}>
+                <div className="pill">Discoverable pricing</div>
+                <div className="pill">Proof-based access</div>
+                <div className="pill">Fast or final settlement</div>
+                <div className="pill">Receipts and audit history</div>
+              </div>
             </div>
 
-            <div className="section" style={{ marginTop: 10 }}>
-              <div className="pill">Discoverable pricing</div>
-              <div className="pill">Proof-based access</div>
-              <div className="pill">Fast or final settlement</div>
-              <div className="pill">Receipts and audit history</div>
+            <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+              <img className="heroArt" src="/assets/deo-endpoints.svg" alt="DEO standard endpoints diagram" />
             </div>
-          </div>
-
-          <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-            <img className="heroArt" src="/assets/deo-endpoints.svg" alt="DEO standard endpoints diagram" />
           </div>
         </div>
 

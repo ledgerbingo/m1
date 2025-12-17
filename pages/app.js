@@ -288,68 +288,76 @@ export default function AppPage() {
           </div>
         </div>
 
-        <div className="hero">
-          <div className="card">
-            <div className="sectionTitle">Your wallet</div>
-            <div className="h1" style={{ fontSize: 44 }}>
-              Send and receive with Web2 simplicity.
-            </div>
-            <p className="lead">
-              Non-custodial by default. Settlement and receipts live on Movement L1, but the experience stays simple.
-            </p>
+        <div className="heroBand">
+          <div className="heroBandGrid">
+            <div className="card">
+              <div className="sectionTitle">Your wallet</div>
+              <div className="h1" style={{ fontSize: 44 }}>
+                Send and receive with Web2 simplicity.
+              </div>
+              <p className="lead">
+                Non-custodial by default. Settlement and receipts live on Movement L1, but the experience stays simple.
+              </p>
 
-            <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <button className="btn primary" onClick={onConnect} disabled={connectBusy}>
-                {address ? "Wallet connected" : connectBusy ? "Connecting…" : "Connect wallet"}
-              </button>
-              {address ? (
-                <button className="btn" onClick={onCopyAddress}>
-                  Copy address
+              <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <button className="btn primary" onClick={onConnect} disabled={connectBusy}>
+                  {address ? "Wallet connected" : connectBusy ? "Connecting…" : "Connect wallet"}
                 </button>
+                {address ? (
+                  <button className="btn" onClick={onCopyAddress}>
+                    Copy address
+                  </button>
+                ) : null}
+              </div>
+
+              <div className="section" style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <div className="pill">{walletAvailable ? "Wallet detected" : "No wallet detected"}</div>
+                {chainLabel ? <div className="pill">Network: {chainLabel}</div> : null}
+                {address ? <div className="pill">{shortAddr(address)}</div> : null}
+              </div>
+
+              {message ? (
+                <div className="section">
+                  <div className="muted" style={{ lineHeight: 1.7 }}>
+                    {message}
+                  </div>
+                </div>
               ) : null}
             </div>
 
-            <div className="section" style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <div className="pill">{walletAvailable ? "Wallet detected" : "No wallet detected"}</div>
-              {chainLabel ? <div className="pill">Network: {chainLabel}</div> : null}
-              {address ? <div className="pill">{shortAddr(address)}</div> : null}
-            </div>
-
-            {message ? (
-              <div className="section">
-                <div className="muted" style={{ lineHeight: 1.7 }}>
-                  {message}
-                </div>
+            <div className="card">
+              <div className="sectionTitle">Balance</div>
+              <div className="h1" style={{ fontSize: 44, marginTop: 6 }}>
+                {address
+                  ? balanceBusy
+                    ? "Loading…"
+                    : balanceValue != null
+                      ? `${formatMoveAmount(balanceValue)} MOVE`
+                      : "—"
+                  : "—"}
               </div>
-            ) : null}
-          </div>
+              <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
+                {address ? "Your on-chain MOVE balance." : "Connect your wallet to view your balance."}
+              </div>
 
-          <div className="card">
-            <div className="sectionTitle">Balance</div>
-            <div className="h1" style={{ fontSize: 44, marginTop: 6 }}>
-              {address ? (balanceBusy ? "Loading…" : balanceValue != null ? `${formatMoveAmount(balanceValue)} MOVE` : "—") : "—"}
-            </div>
-            <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-              {address ? "Your on-chain MOVE balance." : "Connect your wallet to view your balance."}
-            </div>
+              <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    refreshBalance(address).catch(() => undefined);
+                    refreshActivity(address).catch(() => undefined);
+                  }}
+                  disabled={!address || balanceBusy || activityBusy}
+                >
+                  Refresh
+                </button>
+              </div>
 
-            <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <button
-                className="btn"
-                onClick={() => {
-                  refreshBalance(address).catch(() => undefined);
-                  refreshActivity(address).catch(() => undefined);
-                }}
-                disabled={!address || balanceBusy || activityBusy}
-              >
-                Refresh
-              </button>
-            </div>
-
-            <div className="section">
-              <div className="k">Recent activity</div>
-              <div className="muted" style={{ marginTop: 8 }}>
-                {activityBusy ? "Loading…" : activity.length ? `${activity.length} items` : "No activity yet"}
+              <div className="section">
+                <div className="k">Recent activity</div>
+                <div className="muted" style={{ marginTop: 8 }}>
+                  {activityBusy ? "Loading…" : activity.length ? `${activity.length} items` : "No activity yet"}
+                </div>
               </div>
             </div>
           </div>

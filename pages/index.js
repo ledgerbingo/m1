@@ -38,41 +38,66 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="hero">
-          <div className="card">
-            <div className="sectionTitle">DEO</div>
-            <div className="h1">A modern wallet for everyday payments.</div>
-            <p className="lead">
-              Send and receive with Web2 simplicity. You keep your keys. Movement L1 handles settlement and receipts
-              under the hood.
-            </p>
+        <div className="heroBand">
+          <div className="heroBandGrid">
+            <div>
+              <div className="sectionTitle">DEO Wallet</div>
+              <div className="h1">Everyday payments, on-chain receipts.</div>
+              <p className="lead">
+                A modern, non-custodial wallet experience on Movement. Send and receive with familiar UX, with verifiable
+                settlement when it matters.
+              </p>
 
-            <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a className="btn primary" href="/app">
-                Open wallet
-              </a>
-              <a className="btn" href="/security">
-                How security works
-              </a>
+              <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <a className="btn primary" href="/app">
+                  Open wallet
+                </a>
+                <a className="btn" href="/security">
+                  Security
+                </a>
+                <a className="btn" href="/developers">
+                  Developers
+                </a>
+              </div>
+
+              <div className="section" style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <div className="pill">Non-custodial</div>
+                <div className="pill">Send &amp; receive</div>
+                <div className="pill">Receipts</div>
+                <div className="pill">Movement L1</div>
+              </div>
             </div>
 
-            <div
-              className="section"
-              style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}
-            >
-              <div className="pill">Non-custodial</div>
-              <div className="pill">Send &amp; receive</div>
-              <div className="pill">Activity &amp; receipts</div>
-              <div className="pill">Built on Movement</div>
+            <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+              <img className="heroArt" src="/assets/deo-hero.svg" alt="DEO illustration" />
             </div>
           </div>
+        </div>
 
-          <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-            <img
-              className="heroArt"
-              src="/assets/deo-hero.svg"
-              alt="DEO illustration"
-            />
+        <div className="section">
+          <div className="sectionTitle">At a glance</div>
+          <div className="grid3">
+            <div className="card">
+              <div className="statValue">0%</div>
+              <div className="k">Custody</div>
+              <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
+                Your private keys stay with you. DEO never takes custody of your funds.
+              </div>
+            </div>
+            <div className="card">
+              <div className="statValue">1</div>
+              <div className="k">Wallet</div>
+              <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
+                One simple flow to send, receive, and track activity with receipts.
+              </div>
+            </div>
+            <div className="card">
+              <div className="statValue">100%</div>
+              <div className="k">Verifiable</div>
+              <div className="muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
+                Transfers settle on Movement. Activity is auditable and can be verified on-chain.
+              </div>
+            </div>
           </div>
         </div>
 
@@ -169,6 +194,40 @@ export default function HomePage() {
               <a className="btn" href="/developers/examples#playground">
                 Playground
               </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="section">
+          <div className="heroBand">
+            <div className="heroBandGrid">
+              <div>
+                <div className="sectionTitle">Newsletter</div>
+                <div className="h1" style={{ fontSize: 44 }}>
+                  Get product updates.
+                </div>
+                <p className="lead">
+                  Occasional updates on wallet UX, Movement integrations, and the DEO developer standard.
+                </p>
+              </div>
+
+              <div>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                  }}
+                >
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    <input className="input" placeholder="Email address" />
+                    <button className="btn primary" type="submit">
+                      Subscribe
+                    </button>
+                  </div>
+                  <div className="muted" style={{ marginTop: 10 }}>
+                    No spam. Unsubscribe anytime.
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>

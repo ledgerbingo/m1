@@ -2,66 +2,66 @@
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#f7f9ff"/>
+      <stop offset="1" stop-color="#f2efe9"/>
     </linearGradient>
     <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#6d28d9"/>
-      <stop offset="1" stop-color="#0ea5e9"/>
+      <stop offset="0" stop-color="#7cf5c3"/>
+      <stop offset="1" stop-color="#22c55e"/>
     </linearGradient>
     <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="12"/>
     </filter>
     <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M0,0 L12,6 L0,12 Z" fill="#0b1020" fill-opacity="0.55"/>
+      <path d="M0,0 L12,6 L0,12 Z" fill="#071812" fill-opacity="0.55"/>
     </marker>
   </defs>
 
   <rect width="1200" height="420" fill="url(#bg)"/>
-  <circle cx="260" cy="90" r="200" fill="#6d28d9" opacity="0.12" filter="url(#soft)"/>
-  <circle cx="980" cy="110" r="210" fill="#0ea5e9" opacity="0.10" filter="url(#soft)"/>
+  <circle cx="260" cy="90" r="200" fill="#0f3f35" opacity="0.12" filter="url(#soft)"/>
+  <circle cx="980" cy="110" r="210" fill="#7cf5c3" opacity="0.10" filter="url(#soft)"/>
   <circle cx="640" cy="420" r="260" fill="#22c55e" opacity="0.08" filter="url(#soft)"/>
 
-  <g font-family="ui-sans-serif, system-ui" fill="#0b1020">
+  <g font-family="ui-sans-serif, system-ui" fill="#071812">
     <text x="44" y="50" font-size="14" opacity="0.72" letter-spacing="0.14em">DEO FLOW</text>
     <text x="44" y="86" font-size="26" font-weight="700" opacity="0.92">HTTP 402 → Proof → Unlock</text>
     <text x="44" y="110" font-size="13" opacity="0.60">A standardized handshake for pay-per-call APIs</text>
   </g>
 
   <g>
-    <path d="M130 235 L1070 235" stroke="#0b1020" stroke-opacity="0.16" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M130 235 L1070 235" stroke="#071812" stroke-opacity="0.16" stroke-width="3" marker-end="url(#arrow)"/>
   </g>
 
   <g font-family="ui-sans-serif, system-ui">
     <g transform="translate(80 175)">
-      <rect x="0" y="0" width="170" height="120" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect x="0" y="0" width="170" height="120" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="32" font-size="12" opacity="0.70" letter-spacing="0.12em">1 · REQUEST</text>
       <text x="18" y="60" font-size="14" font-weight="700" opacity="0.92">GET /premium</text>
       <text x="18" y="84" font-size="12" opacity="0.62">No proof yet</text>
     </g>
 
     <g transform="translate(270 175)">
-      <rect x="0" y="0" width="200" height="120" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect x="0" y="0" width="200" height="120" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="32" font-size="12" opacity="0.70" letter-spacing="0.12em">2 · CHALLENGE</text>
       <text x="18" y="60" font-size="14" font-weight="700" opacity="0.92">402 + x402 header</text>
       <text x="18" y="84" font-size="12" opacity="0.62">token · amount · facilitator</text>
     </g>
 
     <g transform="translate(490 175)">
-      <rect x="0" y="0" width="190" height="120" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect x="0" y="0" width="190" height="120" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="32" font-size="12" opacity="0.70" letter-spacing="0.12em">3 · PROOF</text>
       <text x="18" y="60" font-size="14" font-weight="700" opacity="0.92">Movement tx hash</text>
       <text x="18" y="84" font-size="12" opacity="0.62">pay_merchant / transfer</text>
     </g>
 
     <g transform="translate(700 175)">
-      <rect x="0" y="0" width="170" height="120" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect x="0" y="0" width="170" height="120" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="32" font-size="12" opacity="0.70" letter-spacing="0.12em">4 · VERIFY</text>
       <text x="18" y="60" font-size="14" font-weight="700" opacity="0.92">/verify</text>
       <text x="18" y="84" font-size="12" opacity="0.62">fast / final</text>
     </g>
 
     <g transform="translate(890 175)">
-      <rect x="0" y="0" width="230" height="120" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect x="0" y="0" width="230" height="120" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="32" font-size="12" opacity="0.70" letter-spacing="0.12em">5 · UNLOCK</text>
       <text x="18" y="60" font-size="14" font-weight="700" opacity="0.92">Retry with X-Payment-Proof</text>
       <text x="18" y="84" font-size="12" opacity="0.62">200 JSON response</text>
@@ -70,6 +70,6 @@
 
   <g opacity="0.92">
     <rect x="454" y="132" width="292" height="34" rx="17" fill="url(#g)"/>
-    <text x="600" y="154" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="13" fill="#ffffff" opacity="0.95">DEO standardizes the handshake so any paid endpoint can be unlocked</text>
+    <text x="600" y="154" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="13" fill="#071812" opacity="0.92">DEO standardizes the handshake so any paid endpoint can be unlocked</text>
   </g>
 </svg>

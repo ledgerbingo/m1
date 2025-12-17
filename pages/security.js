@@ -38,25 +38,27 @@ export default function SecurityPage() {
           </div>
         </div>
 
-        <div className="hero">
-          <div className="card">
-            <div className="sectionTitle">Security</div>
-            <div className="h1">Your keys stay with you.</div>
-            <p className="lead">
-              DEO is a non-custodial wallet experience. You connect with a wallet extension and sign transactions locally.
-              DEO does not store your private keys.
-            </p>
+        <div className="heroBand">
+          <div className="heroBandGrid">
+            <div>
+              <div className="sectionTitle">Security</div>
+              <div className="h1">Your keys stay with you.</div>
+              <p className="lead">
+                DEO is a non-custodial wallet experience. You connect with a wallet extension and sign transactions locally.
+                DEO does not store your private keys.
+              </p>
 
-            <div className="section" style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <div className="pill">Non-custodial</div>
-              <div className="pill">On-chain settlement</div>
-              <div className="pill">Receipts &amp; auditability</div>
-              <div className="pill">Open network</div>
+              <div className="section" style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <div className="pill">Non-custodial</div>
+                <div className="pill">On-chain settlement</div>
+                <div className="pill">Receipts &amp; auditability</div>
+                <div className="pill">Open network</div>
+              </div>
             </div>
-          </div>
 
-          <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-            <img className="heroArt" src="/assets/deo-flow.svg" alt="Flow diagram" />
+            <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+              <img className="heroArt" src="/assets/deo-flow.svg" alt="Flow diagram" />
+            </div>
           </div>
         </div>
 

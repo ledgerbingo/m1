@@ -53,35 +53,37 @@ export default function ExamplesPage() {
           </div>
         </div>
 
-        <div className="hero">
-          <div className="card">
-            <div className="sectionTitle">Examples</div>
-            <div className="h1">Run the x402 flow end-to-end.</div>
-            <p className="lead">
-              This playground demonstrates the DEO handshake: request a premium endpoint, receive a 402 challenge, produce a
-              proof (a Movement transaction hash in chain mode), verify it, then retry and receive the premium response.
-            </p>
-            <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a className="btn primary" href="#playground">
-                Open playground
-              </a>
-              <a className="btn" href="#recipes">
-                CLI recipes
-              </a>
-              <a className="btn" href="#patterns">
-                Integration patterns
-              </a>
+        <div className="heroBand">
+          <div className="heroBandGrid">
+            <div>
+              <div className="sectionTitle">Examples</div>
+              <div className="h1">Run the x402 flow end-to-end.</div>
+              <p className="lead">
+                This playground demonstrates the DEO handshake: request a premium endpoint, receive a 402 challenge, produce a
+                proof (a Movement transaction hash in chain mode), verify it, then retry and receive the premium response.
+              </p>
+              <div className="section" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <a className="btn primary" href="#playground">
+                  Open playground
+                </a>
+                <a className="btn" href="#recipes">
+                  CLI recipes
+                </a>
+                <a className="btn" href="#patterns">
+                  Integration patterns
+                </a>
+              </div>
+              <div className="section" style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <div className="pill">402 challenge</div>
+                <div className="pill">Proof verification</div>
+                <div className="pill">Receipts</div>
+                <div className="pill">Payment history</div>
+              </div>
             </div>
-            <div className="section" style={{ marginTop: 10 }}>
-              <div className="pill">402 challenge</div>
-              <div className="pill">Proof verification</div>
-              <div className="pill">Receipts</div>
-              <div className="pill">Payment history</div>
-            </div>
-          </div>
 
-          <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-            <img className="heroArt" src="/assets/deo-cases.svg" alt="DEO examples illustration" />
+            <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+              <img className="heroArt" src="/assets/deo-cases.svg" alt="DEO examples illustration" />
+            </div>
           </div>
         </div>
 

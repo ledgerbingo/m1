@@ -2,74 +2,74 @@
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#f7f9ff"/>
+      <stop offset="1" stop-color="#f2efe9"/>
     </linearGradient>
     <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#6d28d9"/>
-      <stop offset="1" stop-color="#0ea5e9"/>
+      <stop offset="0" stop-color="#7cf5c3"/>
+      <stop offset="1" stop-color="#22c55e"/>
     </linearGradient>
     <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="14"/>
     </filter>
     <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M0,0 L12,6 L0,12 Z" fill="#0b1020" fill-opacity="0.45"/>
+      <path d="M0,0 L12,6 L0,12 Z" fill="#071812" fill-opacity="0.45"/>
     </marker>
   </defs>
 
   <rect width="1200" height="520" fill="url(#bg)"/>
-  <circle cx="260" cy="170" r="260" fill="#6d28d9" opacity="0.12" filter="url(#soft)"/>
-  <circle cx="980" cy="150" r="260" fill="#0ea5e9" opacity="0.10" filter="url(#soft)"/>
+  <circle cx="260" cy="170" r="260" fill="#0f3f35" opacity="0.12" filter="url(#soft)"/>
+  <circle cx="980" cy="150" r="260" fill="#7cf5c3" opacity="0.10" filter="url(#soft)"/>
   <circle cx="640" cy="520" r="300" fill="#22c55e" opacity="0.08" filter="url(#soft)"/>
 
-  <g font-family="ui-sans-serif, system-ui" fill="#0b1020">
+  <g font-family="ui-sans-serif, system-ui" fill="#071812">
     <text x="44" y="54" font-size="14" opacity="0.72" letter-spacing="0.14em">SERVICE STANDARD</text>
     <text x="44" y="90" font-size="26" font-weight="700" opacity="0.92">A small, composable API surface</text>
     <text x="44" y="114" font-size="13" opacity="0.60">Discover pricing, verify proofs, and audit usage with receipts and events</text>
   </g>
 
   <g>
-    <rect x="440" y="170" width="320" height="190" rx="28" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+    <rect x="440" y="170" width="320" height="190" rx="28" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
     <rect x="470" y="200" width="260" height="60" rx="18" fill="url(#g)"/>
     <text x="600" y="238" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="22" fill="#ffffff" font-weight="750" opacity="0.96">DEO</text>
     <text x="600" y="262" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="12" fill="#ffffff" opacity="0.86">status · catalog · verify · receipt · payments</text>
 
-    <rect x="470" y="278" width="260" height="56" rx="18" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
-    <text x="600" y="312" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="13" fill="#0b1020" opacity="0.82">Premium endpoints: 402 challenge + proof gate</text>
+    <rect x="470" y="278" width="260" height="56" rx="18" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
+    <text x="600" y="312" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="13" fill="#071812" opacity="0.82">Premium endpoints: 402 challenge + proof gate</text>
   </g>
 
-  <g font-family="ui-sans-serif, system-ui" fill="#0b1020">
+  <g font-family="ui-sans-serif, system-ui" fill="#071812">
     <g transform="translate(120 175)">
-      <rect width="250" height="86" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect width="250" height="86" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="34" font-size="14" font-weight="700" opacity="0.92">GET /status</text>
       <text x="18" y="58" font-size="12" opacity="0.62">Service configuration snapshot</text>
     </g>
 
     <g transform="translate(120 290)">
-      <rect width="250" height="86" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect width="250" height="86" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="34" font-size="14" font-weight="700" opacity="0.92">GET /catalog</text>
       <text x="18" y="58" font-size="12" opacity="0.62">Products + prices + challenge header</text>
     </g>
 
     <g transform="translate(830 175)">
-      <rect width="250" height="86" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect width="250" height="86" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="34" font-size="14" font-weight="700" opacity="0.92">GET/POST /verify</text>
       <text x="18" y="58" font-size="12" opacity="0.62">Validate tx proof (fast/final)</text>
     </g>
 
     <g transform="translate(830 290)">
-      <rect width="250" height="86" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect width="250" height="86" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="34" font-size="14" font-weight="700" opacity="0.92">GET /receipt</text>
       <text x="18" y="58" font-size="12" opacity="0.62">Normalized receipt object</text>
     </g>
 
     <g transform="translate(480 392)">
-      <rect width="240" height="86" rx="22" fill="#ffffff" stroke="#0b1020" stroke-opacity="0.10"/>
+      <rect width="240" height="86" rx="22" fill="#ffffff" stroke="#071812" stroke-opacity="0.10"/>
       <text x="18" y="34" font-size="14" font-weight="700" opacity="0.92">GET /payments</text>
       <text x="18" y="58" font-size="12" opacity="0.62">History (chain events or preview)</text>
     </g>
   </g>
 
-  <g stroke="#0b1020" stroke-opacity="0.18" stroke-width="3" fill="none" marker-end="url(#arrow)">
+  <g stroke="#071812" stroke-opacity="0.18" stroke-width="3" fill="none" marker-end="url(#arrow)">
     <path d="M370 218 C 410 218, 410 238, 440 238"/>
     <path d="M370 333 C 410 333, 410 262, 440 262"/>
     <path d="M760 238 C 790 238, 800 218, 830 218"/>
